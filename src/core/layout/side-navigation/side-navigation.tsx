@@ -93,19 +93,19 @@ export function CustomSideNav() {
 
                 <ButtonItem
                     id="2"
-
+                    isSelected={!!(pathname.match('/users'))}
                     testId="filter-nesting-item"
                     iconBefore={<UsersIcon label=""/>}
-                    onClick={() => navigate('')}
+                    onClick={() => navigate('/users')}
                 > Users
                 </ButtonItem>
 
                 <ButtonItem
                     id="2"
-
+                    isSelected={!!(pathname.match('/businesses'))}
                     testId="filter-nesting-item"
                     iconBefore={<PowerSearchIcon label=""/>}
-                    onClick={() => navigate('')}
+                    onClick={() => navigate('/businesses')}
                 >Power Search
                 </ButtonItem>
 
@@ -121,19 +121,19 @@ export function CustomSideNav() {
 
                 <ButtonItem
                     id="2"
-
+                    isSelected={!!(pathname.match('/ads'))}
                     testId="filter-nesting-item"
                     iconBefore={<ScheduleIcon label=""/>}
-                    onClick={() => navigate('')}
+                    onClick={() => navigate('/ads/sales')}
                 >Sold Ads
                 </ButtonItem>
 
                 <ButtonItem
                     id="2"
-
+                    isSelected={!!(pathname.match('/app-feedback'))}
                     testId="filter-nesting-item"
                     iconBefore={<AppFeedbackIcon label=""/>}
-                    onClick={() => navigate('')}
+                    onClick={() => navigate('/app-feedback')}
                 >App Feedback
                 </ButtonItem>
 
@@ -146,7 +146,7 @@ export function CustomSideNav() {
                     testId="settings-nesting-item"
                 >
 
-                    <Section hasSeparator title="Period entries financial reports">
+                  {/*  <Section hasSeparator title="Period entries financial reports">
                         <ButtonItem onClick={() => navigate('/reports/fina-entries/daily')}>Daily Entry</ButtonItem>
                         <ButtonItem onClick={() => navigate('/reports/fina-entries/month-entry')}>Monthly
                             Entry</ButtonItem>
@@ -158,13 +158,13 @@ export function CustomSideNav() {
                         <ButtonItem onClick={() => navigate('/reports/Students-statistics/scholarship')}>Scholarship
                             Students</ButtonItem>
                     </Section>
-
+*/}
                 </NestingItem>
                 <ButtonItem
                     id="4"
-
+                    isSelected={!!(pathname.match('/notifications'))}
                     iconBefore={<NotificationsIcon label=""/>}
-                    onClick={() => navigate('/settings/activity-log')}
+                    onClick={() => navigate('/notifications')}
                 >Notifications</ButtonItem>
 
 

@@ -11,14 +11,14 @@ import { NotificationIndicator } from '@atlaskit/notification-indicator';
 import {SlotWrapper} from './design-system/common';
 
 import '../../app.css';
-
+import DebugIcon from '@atlaskit/icon/glyph/lightbulb';
 import {CustomSideNav} from "./side-navigation/side-navigation";
 
 import {FlagsProvider} from "@atlaskit/flag";
 import {AppRoutes} from "../routes";
 import {
     AppSwitcher,
-    AtlassianNavigation, Help, Notifications,
+    AtlassianNavigation, Help, IconButton, Notifications,
     PrimaryButton,
     PrimaryDropdownButton,
     ProductHome, Settings
@@ -85,7 +85,7 @@ function TopNavigationContents() {
             renderSettings={DefaultSettings}
             renderProfile={DefaultProfile}
             renderNotifications={() => (
-                <Notifications badge={NotificationsBadge} tooltip="Notifications" />
+                <DebugIcon label={'debug bottom'}/>
             )}
            renderAppSwitcher={DefaultAppSwitcher}
         />
