@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "g-admin-dev": "next dev -p 8120",
+    "g-admin-build": "next build",
+    "g-admin-start": "next start -p 8120",
     "lint": "next lint"
   },
   "dependencies": {
