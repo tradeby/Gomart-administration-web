@@ -105,7 +105,7 @@ export function CustomSideNav() {
                     isSelected={!!(pathname.match('/businesses'))}
                     testId="filter-nesting-item"
                     iconBefore={<PowerSearchIcon label=""/>}
-                    onClick={() => navigate('/businesses')}
+                    onClick={() => navigate('/businesses/power-search')}
                 >Power Search
                 </ButtonItem>
 

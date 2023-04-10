@@ -8,13 +8,13 @@ import {Login} from "../features/authentication/login";
 import {UsersList} from "../features/users/users-list";
 import {Settings} from "../features/settings/settings";
 import {PowerSearch} from "../features/businesses/power-search";
-import {BusinessList} from "../features/businesses/business-list";
 import {AppFeedback} from "../features/app-feedback/app-feedback";
 import {SoldAds} from "../features/ads-sales/sold-ads";
 import {AdsSettings} from "../features/ads-sales/ads-settings";
 import {Notifications} from "../features/notifications/notifications";
 import {DebugSeedData} from "../features/debug/seed-data";
 import {UserDetails} from "../features/users/user-detail/user-detail";
+import {BusinessDetail} from "../features/businesses/business-detail/business-detail";
 
 
 export function AppRoutes() {
@@ -26,7 +26,7 @@ export function AppRoutes() {
         <Route path="/Users/user-detail/:userId" element={<UserDetails/>}></Route>
         <Route path="/settings" element={<Settings/>}></Route>
         <Route path="/businesses/power-search" element={<PowerSearch/>}></Route>
-        <Route path="/businesses" element={<BusinessList/>}></Route>
+        <Route path="/businesses/business-detail/:businessId" element={<BusinessDetail/>}></Route>
         <Route path="/app-feedback" element={<AppFeedback/>}></Route>
         <Route path="/ads/sales" element={<SoldAds/>}></Route>
         <Route path="/ads/settings" element={<AdsSettings/>}></Route>
