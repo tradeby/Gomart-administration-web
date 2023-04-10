@@ -66,7 +66,10 @@ export default function ProductLayout() {
     );
 }
 function TopNavigationContents() {
-
+     const openTab= (url:string)=> {
+        window.open(url);
+    }
+const navigate = useNavigate();
     return (
 
         <AtlassianNavigation
@@ -74,19 +77,23 @@ function TopNavigationContents() {
             moreLabel="More"
             renderProductHome={ProductHomeExample}
             primaryItems={[
-                <PrimaryButton selected>Admin area</PrimaryButton>,
-                <PrimaryButton>Algolia</PrimaryButton>,
-                <PrimaryButton>StreamChats</PrimaryButton>,
-                <PrimaryButton>Paystack</PrimaryButton>,
-                <PrimaryButton>Google Analytics</PrimaryButton>,
-                <PrimaryButton>Gomart Website</PrimaryButton>,
+                <PrimaryButton onClick={()=> navigate('/')}>Admin area</PrimaryButton>,
+                <PrimaryButton onClick={()=>openTab('https://www.algolia.com/users/sign_in')}>Algolia</PrimaryButton>,
+                <PrimaryButton onClick={()=>openTab('https://dashboard.getstream.io')}>StreamChats</PrimaryButton>,
+                <PrimaryButton onClick={()=>openTab('https://dashboard.paystack.com/')}>Paystack</PrimaryButton>,
+                <PrimaryButton onClick={()=>openTab('https://analytics.google.com/analytics/web/#/p224736800/reports/intelligenthome')}>Google Analytics</PrimaryButton>,
+                <PrimaryButton onClick={()=>openTab('https://www.gomart.ng')}>Gomart Website</PrimaryButton>,
             ]}
             renderHelp={() => <Help tooltip="Get help" />}
             renderSettings={DefaultSettings}
             renderProfile={DefaultProfile}
-            renderNotifications={() => (
-                <DebugIcon label={'debug bottom'}/>
-            )}
+            renderNotifications={() =>
+                {
+                    const navigate = useNavigate();
+                    return <div onClick={()=>navigate('/debug/seed-data')}> <DebugIcon  label={'debug bottom'}/> </div>;
+                }
+
+            }
            renderAppSwitcher={DefaultAppSwitcher}
         />
     );

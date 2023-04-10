@@ -5,8 +5,6 @@ import {store} from './app/store';
 import App from './app';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
-
-
 const container = document.getElementById('root')! || document.createElement('div');
 
 //export const serverUrl = process.env.REACT_APP_SERVER_URL;

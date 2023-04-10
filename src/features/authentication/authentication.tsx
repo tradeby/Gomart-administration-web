@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {SplashScreen} from "../splash-screen/splash-screen";
+import {Login} from "./login";
 
 export function AuthWrapper({children}: any) {
     const [showSplashScreen, setShowSplashScreen] = useState<boolean>(true);
@@ -13,5 +14,6 @@ export function AuthWrapper({children}: any) {
     },[]);
     return !showSplashScreen? <div>
         {children}
-    </div>: <SplashScreen/>;
+    </div>
+       /* <Login/>*/: <SplashScreen/>;
 }
