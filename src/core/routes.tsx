@@ -10,11 +10,11 @@ import {Settings} from "../features/settings/settings";
 import {PowerSearch} from "../features/businesses/power-search";
 import {AppFeedback} from "../features/app-feedback/app-feedback";
 import {SoldAds} from "../features/ads-sales/sold-ads";
-import {AdsSettings} from "../features/ads-sales/ads-settings";
 import {Notifications} from "../features/notifications/notifications";
 import {DebugSeedData} from "../features/debug/seed-data";
 import {UserDetails} from "../features/users/user-detail/user-detail";
 import {BusinessDetail} from "../features/businesses/business-detail/business-detail";
+import {AdsSettings} from "../features/ads-sales/ads-settings/ads-settings";
 
 
 export function AppRoutes() {

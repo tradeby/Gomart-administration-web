@@ -11,7 +11,6 @@ import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import AppFeedbackIcon from '@atlaskit/icon/glyph/like';
 import ScheduleIcon from '@atlaskit/icon/glyph/schedule-filled';
 import NotificationsIcon from '@atlaskit/icon/glyph/page';
-import AdsIcon from './../../../assets/ads-icon.svg';
 import {
     ButtonItem, GoBackItem,
     LinkItem, LoadingItems, NavigationContent,
@@ -29,6 +28,7 @@ import {useLocation, useNavigate, useParams} from "react-router-dom";
 import LockIcon from "@atlaskit/icon/glyph/lock";
 import Lozenge from "@atlaskit/lozenge";
 import Icon from "@atlaskit/icon";
+import {AdsIconCustom} from "./common/custom-ads-icon";
 
 
 export function CustomSideNav() {
@@ -123,19 +123,12 @@ export function CustomSideNav() {
                     id="2"
                     isSelected={!!(pathname.match('/ads'))}
                     testId="filter-nesting-item"
-                    iconBefore={<ScheduleIcon label=""/>}
+                    iconBefore={<AdsIconCustom />}
                     onClick={() => navigate('/ads/sales')}
                 >Sold Ads
                 </ButtonItem>
 
-                <ButtonItem
-                    id="2"
-                    isSelected={!!(pathname.match('/app-feedback'))}
-                    testId="filter-nesting-item"
-                    iconBefore={<AppFeedbackIcon label=""/>}
-                    onClick={() => navigate('/app-feedback')}
-                >App Feedback
-                </ButtonItem>
+
 
                 <NestingItem
                     id="300"
@@ -161,11 +154,19 @@ export function CustomSideNav() {
 */}
                 </NestingItem>
                 <ButtonItem
+                    id="2"
+                    isSelected={!!(pathname.match('/app-feedback'))}
+                    testId="filter-nesting-item"
+                    iconBefore={<AppFeedbackIcon label=""/>}
+                    onClick={() => navigate('/app-feedback')}
+                >App Feedback
+                </ButtonItem>
+              {/*  <ButtonItem
                     id="4"
                     isSelected={!!(pathname.match('/notifications'))}
                     iconBefore={<NotificationsIcon label=""/>}
                     onClick={() => navigate('/notifications')}
-                >Notifications</ButtonItem>
+                >Notifications</ButtonItem>*/}
 
 
             </Section>
