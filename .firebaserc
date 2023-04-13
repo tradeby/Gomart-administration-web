@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "gomart-apps"
-  }
+  },
+  "targets": {
+    "gomart-apps": {
+      "hosting": {
+        "gomart-admin": [
+          "admin-gomart"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

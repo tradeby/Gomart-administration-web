@@ -6,6 +6,7 @@
     "g-admin-start": "set PORT=8170 && react-scripts start",
     "g-admin-build": "react-scripts build",
     "g-admin-test": "react-scripts test",
+    "firebase-hosting": "npm run g-admin-build && firebase deploy --only hosting:gomart-admin",
     "eject": "react-scripts eject"
   },
   "dependencies": {
