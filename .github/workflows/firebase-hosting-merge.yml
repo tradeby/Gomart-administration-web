@@ -42,13 +42,6 @@ jobs:
           name: dist
           path: build
 
-      - name: Apply target
-        uses: w9jds/firebase-action@master
-        with:
-          args: target:apply hosting gomart-admin gomart-admin
-        env:
-          FIREBASE_TOKEN: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_GOMART_APPS }}"
-
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
