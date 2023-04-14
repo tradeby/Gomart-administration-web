@@ -43,8 +43,4 @@ jobs:
           path: build
 
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting:admin-gomart
-        env:
-          FIREBASE_TOKEN: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_GOMART_APPS }}"
+        run: firebase deploy --only hosting:gomart-admin --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT_GOMART_APPS }}"
