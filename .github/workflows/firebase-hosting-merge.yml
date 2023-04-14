@@ -8,17 +8,51 @@ name: Deploy to Firebase Hosting on merge
       - main
 jobs:
   build_and_deploy:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
+    name: Build
     steps:
-      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-            node-version: 16.10.0
-      - run: npm install
-      - run: npm run g-admin-build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+          node-version: 16.10.0
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        run: |
+          npm run g-admin-build
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
         with:
-          repoToken: '${{ secrets.TOKEN_GITHUB }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GOMART_APPS }}'
-          channelId: live
-          projectId: gomart-apps
+          name: dist
+          path: build
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: dist
+          path: build
+
+      - name: Apply target
+        uses: w9jds/firebase-action@master
+        with:
+          args: target:apply hosting gomart-admin gomart-admin
+        env:
+          FIREBASE_TOKEN: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_GOMART_APPS }}"
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting:gomart-admin
+        env:
+          FIREBASE_TOKEN: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_GOMART_APPS }}"
