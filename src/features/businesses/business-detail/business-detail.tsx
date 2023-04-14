@@ -24,7 +24,7 @@ const actionsContent = (
 
 
 export function BusinessDetail() {
-    return <div className="container px-10">
+    return <div className="container mx-auto px-10">
         <PageHeader
             breadcrumbs={breadcrumbs}
             actions={actionsContent}
