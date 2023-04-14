@@ -6,7 +6,7 @@ export function Dashboard() {
 
     return <div className=' mt-0 static h-96' style={{backgroundColor:'#004453'}}>
         <div className='pt-10 container-md mx-auto w-11/12 xl:w-10/12 2xl:w-9/12'>
-            <p className='text-white text-xl py-5 '>Hello Musa Jahun{/*{user?.firstName} {user?.lastName}*/}!</p>
+            <p className='text-white text-xl py-5 '>Hello Suleiman Musa{/*{user?.firstName} {user?.lastName}*/}!</p>
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pb-4'>
                 {
