@@ -6,7 +6,7 @@
     "gomart-apps": {
       "hosting": {
         "gomart-admin": [
-          "admin-gomart"
+          "gomart-admin"
         ]
       }
     }
