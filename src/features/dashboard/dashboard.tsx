@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import sketchIcon from '../../assets/dashboard/sketch.svg'
-import newFeatureIcon from '../../assets/dashboard/new-feature.svg'
+import newFeatureIcon from '../../assets/dashboard/epic.svg'
 import totalUsersIcon from '../../assets/dashboard/total-users.png'
 import totalAdRevenueIcon from '../../assets/dashboard/total-ad-revenue.png'
 import totalBusinessIcon from '../../assets/dashboard/total-businesses.png'
@@ -91,8 +91,8 @@ export function Dashboard() {
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 '>
                 {
                     isLoading? <DashboardCardSmLoader/>:
-                        <DashboardCardLg onClick={()=>{}} sectionTitle='Registration' title='Create new business'
-                                         logo={newFeatureIcon} description='Create a new business from the gomart studio and link to user'/>
+                        <DashboardCardLg onClick={()=>navigate('/ads/sales')} sectionTitle='Revenue' title='Ads Sales & Settings'
+                                         logo={newFeatureIcon} description='Checkout all transactions of sold ads and revenue from sales'/>
                 }
                 {
                        isLoading? <DashboardCardSmLoader/>:
