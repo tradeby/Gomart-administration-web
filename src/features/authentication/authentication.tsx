@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {SplashScreen} from "../splash-screen/splash-screen";
-import {Login} from "./login";
+import {Login} from "./login/login";
+import {useAppSelector} from "../../app/hooks";
 
 export function AuthWrapper({children}: any) {
-    const [showSplashScreen, setShowSplashScreen] = useState<boolean>(true);
+    const status = useAppSelector((state) => state.authentication.status);
 
-    useEffect(()=>{
+    if (status === 'success') {
+        return <div> {children}</div>
+    } else if (status === 'initial') {
+        return <SplashScreen/>;
+    } else {
+        return <Login/>
+    }
 
-        setTimeout(()=>{
-            setShowSplashScreen(false);
-        }, 3000);
-
-    },[]);
-    return !showSplashScreen? <div>
-        {children}
-    </div>
-       /* <Login/>*/: <SplashScreen/>;
 }

@@ -9,6 +9,8 @@ import React, {useState} from 'react';
 
 import { NotificationIndicator } from '@atlaskit/notification-indicator';
 import {SlotWrapper} from './design-system/common';
+import type { CustomGlyphProps } from '@atlaskit/icon/types';
+import Icon from '@atlaskit/icon';
 
 import '../../app.css';
 import DebugIcon from '@atlaskit/icon/glyph/lightbulb';
@@ -90,7 +92,7 @@ const navigate = useNavigate();
             renderNotifications={() =>
                 {
                     const navigate = useNavigate();
-                    return <div onClick={()=>navigate('/debug/seed-data')}> <DebugIcon  label={'debug bottom'}/> </div>;
+                    return <IconButton icon={<DebugIcon  label={'debug bottom'}/>} onClick={()=>navigate('/debug/seed-data')}  tooltip={'debug'}/>;
                 }
 
             }
@@ -116,3 +118,5 @@ function ProductHomeExample() {
 
     />
 }
+
+

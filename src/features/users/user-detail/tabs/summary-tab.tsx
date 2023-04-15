@@ -88,26 +88,26 @@ export function SummaryTabPanel() {
                         )}
                     </Form>
                     <SavedProductsSection/>
-                    <SavedProductsSection/>
+                    <RecentlyViewedProductsSection/>
                     <FollowedBusinessesSection/>
 
                 </div>
                 <div className="col-span-4">
 
-                    <div className="max-w-md my-4 mx-auto rounded-md overflow-hidden shadow-md">
+                    <div className="max-w-md my-4 pb-8 mx-auto rounded-md overflow-hidden shadow-md">
                         <div className="relative h-48">
                             <img className="absolute inset-0 object-cover justify-center w-full h-full rounded-t-md"
-                                 src="https://source.unsplash.com/random/800x600" alt="Profile image"/>
+                                 src="https://placehold.it/400x400" alt="Profile image"/>
                             <div className="absolute inset-0 bg-black opacity-50 rounded-t-md"></div>
-                            <div className="relative top-16 left-24 mx-auto mt-2 mr-2">
-                                <img className=" rounded-full" src="https://source.unsplash.com/random/200x200"
+                            <div className="relative top-16 left-24 mx-auto mt-2 mr-2 ">
+                                <img className=" rounded-full object-cover" src="https://placehold.it/300x200" style={{width:'200px', height:'200px'}}
                                      alt="Profile avatar"/>
                             </div>
                         </div>
                         <div className="px-4 pt-20 py-2 bg-white">
                             <h2 className="text-2xl text-center font-bold text-gray-800">Musa Suleiman Jahun</h2>
                             <p className="text-gray-600 text-xl text-center">Phone: 555-555-1234</p>
-                            <div className=" flex justify-center">
+                          {/*  <div className=" flex justify-center">
                                 <img className=" h-32 object-cover"
                                      src="https://th.bing.com/th/id/R.fbd3782b74b283e3a06c44fc7600f0a8?rik=2WUTK7aTKMXbyA&riu=http%3a%2f%2fpngimg.com%2fuploads%2fqr_code%2fqr_code_PNG6.png&ehk=nUlk4YKcz%2fILTzIDicRXimAOjkyFKx9ofIkscb3FFxA%3d&risl=&pid=ImgRaw&r=0"
                                      alt="QR code"/>
@@ -117,7 +117,7 @@ export function SummaryTabPanel() {
                                     <p className="text-gray-600  ">Ads bought: N2,000</p>
                                 </div>
 
-                            </div>
+                            </div>*/}
                         </div>
                     </div>
 
@@ -168,15 +168,29 @@ function SavedProductsSection() {
             <ProductCard/>
 
         </div>
-        <a className="text-md -mt-10 pt-0 font-semibold"> View more
-        </a>
+        <Button  onClick={() => {}}>View more</Button>
+    </>
+}
+
+function RecentlyViewedProductsSection(){
+    return <>
+        <p className="text-lg  pt-12 pb-3 font-semibold"> Recently viewed
+        </p>
+        <div className="flex py-0 my-0 flex-wrap mx-0 px-0">
+            <ProductCard/>
+            <ProductCard/>
+            <ProductCard/>
+            <ProductCard/>
+
+        </div>
+        <Button  onClick={() => {}}>View more</Button>
     </>
 }
 
 
 function FollowedBusinessesSection() {
     return <>
-        <p className="text-lg  pt-12 pb-3 font-semibold"> Saved products
+        <p className="text-lg  pt-12 pb-3 font-semibold"> Followed businesses
         </p>
         <div className="flex flex-wrap mx-0 px-0">
             <BusinessCard/>
@@ -184,7 +198,6 @@ function FollowedBusinessesSection() {
             <BusinessCard/>
             <BusinessCard/>
         </div>
-        <a className="text-md  pt-4 font-semibold"> View more
-        </a>
+        <Button  onClick={() => {}}>View more</Button>
     </>
 }

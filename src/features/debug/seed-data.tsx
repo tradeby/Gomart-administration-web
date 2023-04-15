@@ -10,6 +10,11 @@ import PageHeader from "@atlaskit/page-header";
 import {addDoc, collection} from "firebase/firestore";
 import {db} from "../../shared/firebase/firestore";
 import {onLoadSampleUserData} from "./debug.slice";
+import Tabs, {Tab, TabList, TabPanel} from "@atlaskit/tabs";
+import {SummaryTabPanel} from "../users/user-detail/tabs/summary-tab";
+import {SavedProductsTab} from "../users/user-detail/tabs/saved-products";
+import {RecentlyViewedTab} from "../users/user-detail/tabs/recently-viewed-tab";
+import {FollowedBusinessesTab} from "../users/user-detail/tabs/followed-businesses-tab";
 
 const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
@@ -17,13 +22,14 @@ const breadcrumbs = (
         <BreadcrumbsItem text="List" key="Parent page"/>
     </Breadcrumbs>
 );
-const actionsContent = (
-    <ButtonGroup>
-        <Button appearance="primary">Invite Administrators</Button>
-    </ButtonGroup>
-);
-const barContent = () => {
+
+
+
+export function DebugSeedData() {
+    const navigate = useNavigate();
+    const {loading, sUser, error} = useAppSelector((s) => s.debugSlice)
     const dispatch = useAppDispatch();
+
     async function uploadSampleDataToFirestore() {
         try {
             await addDoc(collection(db, "susers"), {
@@ -42,21 +48,6 @@ const barContent = () => {
         }
     }
 
-    return <div style={{display: 'flex'}}>
-        <div style={{flex: '0 0 400px'}}>
-            <TextField isCompact placeholder="Search users, names, email, phone number etc" aria-label="Search users"/>
-        </div>
-        <div style={{flex: '0 0 200px', marginLeft: 8}}>
-            <Button onClick={() => uploadSampleDataToFirestore()} appearance="primary">Push sample data to
-                firestore</Button>
-        </div>
-    </div>
-};
-
-export function DebugSeedData() {
-    const navigate = useNavigate();
-    const {loading, sUser, error} = useAppSelector((s) => s.debugSlice)
-    const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(onLoadSampleUserData());
 
@@ -64,16 +55,37 @@ export function DebugSeedData() {
     return <div className='container px-12 mx-auto'>
         <PageHeader
             breadcrumbs={breadcrumbs}
-            actions={actionsContent}
-            bottomBar={barContent()}
         >
             Debug - do simple tests and see quick results
         </PageHeader>
-        <div className="mt-10">
-            {loading && <p>Loading data</p>}
-            {error && <p>error encountered {error.status}, {error.message}</p>}
-            {sUser && sUser.map(su => <p key={su.id}>{su.born}, {su.first}, {su.last}</p>)}
-        </div>
+
+        <Tabs
+            onChange={(index) => console.log('Selected Tab', index + 1)}
+            id="default"
+        >
+            <TabList>
+                <Tab>Seed sample data and read that data</Tab>
+                <Tab>test debug</Tab>
+            </TabList>
+            <TabPanel>
+                <div>
+                    <div className='mt-4'>
+                        <Button onClick={() => uploadSampleDataToFirestore()} appearance="primary">Push sample data to
+                            firestore</Button>
+                    </div>
+                    <br/>
+                    <div className="mt-2">
+                        {loading && <p>Loading data</p>}
+                        {error && <p>error encountered {error.status}, {error.message}</p>}
+                        {sUser && sUser.map(su => <p key={su.id}>{su.born}, {su.first}, {su.last}</p>)}
+                    </div>
+                </div>
+
+            </TabPanel>
+            <TabPanel>  </TabPanel>
+
+        </Tabs>
+
 
 
     </div>

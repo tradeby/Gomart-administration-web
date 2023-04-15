@@ -3,13 +3,14 @@ import createSagaMiddleware from 'redux-saga';
 import {rootSaga} from "./root-saga";
 import authenticationReducer from "../features/authentication/authentication-slice";
 import debugReducer from "../features/debug/debug.slice";
-
+import loginReducer from '../features/authentication/login/login.slice'
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
     reducer: {
         //studentsList: studentsListReducer,
         authentication: authenticationReducer,
+        login: loginReducer,
         debugSlice: debugReducer,
     },
     middleware: [sagaMiddleware

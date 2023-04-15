@@ -6,6 +6,9 @@ import {AtlassianNavigation, Help, Profile} from '@atlaskit/atlassian-navigation
 import Popup from "@atlaskit/popup";
 import {ButtonItem, MenuGroup, Section} from "@atlaskit/menu";
 import {useLocalStorage} from "usehooks-ts";
+import {useAppDispatch} from "../../../app/hooks";
+import {authenticationLoggedOut} from "../../../features/authentication/authentication-slice";
+import {logout} from "../../../features/authentication/login/login.slice";
 
 const avatarUrl = '/avater-musa.jpg';
 
@@ -37,13 +40,11 @@ export const DefaultProfile = () => {
 };
 
 const ProfilePopUp = () => {
-    //const dispatch = useAppDispatch();
-    const [authToken, setAuthToken] = useLocalStorage('AuthToken', null);
-
+    const dispatch = useAppDispatch();
 
     const handleLogout = () => {
-        setAuthToken(null);
-       // dispatch(authenticationLoggedOut());
+       dispatch(logout());
+       dispatch(authenticationLoggedOut());
     }
 
     return <MenuGroup>

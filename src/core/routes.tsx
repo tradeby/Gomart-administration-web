@@ -4,7 +4,6 @@ import React from "react";
 import {Dashboard} from "../features/dashboard/dashboard";
 import {NotFound404} from "../features/system/not-found-404";
 import {SplashScreen} from "../features/splash-screen/splash-screen";
-import {Login} from "../features/authentication/login";
 import {UsersList} from "../features/users/users-list";
 import {Settings} from "../features/settings/settings";
 import {PowerSearch} from "../features/businesses/power-search";
@@ -21,7 +20,6 @@ export function AppRoutes() {
     return <Routes>
         <Route path="/" element={<Dashboard/>}></Route>
         <Route path="/splash-screen" element={<SplashScreen/>}></Route>
-        <Route path="/login" element={<Login/>}></Route>
         <Route path="/users" element={<UsersList/>}></Route>
         <Route path="/Users/user-detail/:userId" element={<UserDetails/>}></Route>
         <Route path="/settings" element={<Settings/>}></Route>

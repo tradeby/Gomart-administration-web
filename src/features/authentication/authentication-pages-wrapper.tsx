@@ -3,7 +3,8 @@ import {useNavigate} from "react-router-dom";
 import IconMgmts from '../../assets/tradebyLogo.png'
 import GomartLogo from '../../assets/logo_only.svg'
 import {useDispatch} from "react-redux";
-import {authenticationLoggedOut, authenticationStarted} from "./authentication-slice";
+import {authenticationStarted} from "./authentication-slice";
+
 
 export function AuthPagesWrapper({children}:any) {
     const dispatch = useDispatch();
