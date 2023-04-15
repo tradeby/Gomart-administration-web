@@ -1,40 +1,13 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-
+import {AppUser} from "./login/app-user.model";
 type AuthStatusType = 'initial' | 'success' | 'failure';
 
-export interface AuthenticationPayload {
-    token: string
-    expiration: string
-    status: string
-    message: string
-    userId: string
-    user: AppUser
-}
 
-export interface AppUser {
-    firstName: string
-    lastName: string
-    id: string
-    userName: string
-    normalizedUserName: string
-    email: string
-    normalizedEmail: string
-    emailConfirmed: boolean
-    passwordHash: string
-    securityStamp: string
-    concurrencyStamp: string
-    phoneNumber: string
-    phoneNumberConfirmed: boolean
-    twoFactorEnabled: boolean
-}
 
 export interface AuthenticationState {
     status: AuthStatusType,
     userId?: string,
     user?: AppUser,
-    loginLoading?: boolean,
-    loginError?: boolean,
-    loginData?: AppUser
 }
 
 const initialState: AuthenticationState = {status: "initial"}
@@ -46,10 +19,13 @@ export const authenticationSlice = createSlice({
     initialState,
     reducers: {
         authenticationStarted: (state) => initialState,
-        authenticationLoggedIn: (state, payload: PayloadAction<{ authData?: AuthenticationPayload }>): AuthenticationState => {
-            return {status: "success", userId: payload.payload.authData?.userId, user: payload.payload.authData?.user}
+        authenticationLoggedIn: (state, payload: PayloadAction<{ authData?: AppUser }>): AuthenticationState => {
+            return {status: "success", userId: payload.payload.authData?.uid, user: payload.payload.authData}
         },
-        authenticationLoggedOut: (state) => authenticationFailure,
+        authenticationLoggedOut: (state) => {
+            localStorage.clear();
+            return authenticationFailure
+        },
     },
 })
 
