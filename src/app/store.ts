@@ -4,6 +4,8 @@ import {rootSaga} from "./root-saga";
 import authenticationReducer from "../features/authentication/authentication-slice";
 import debugReducer from "../features/debug/debug.slice";
 import loginReducer from '../features/authentication/login/login.slice'
+import userDetailReducer from '../features/users/user-detail/user-detail.slice';
+import usersListReducer, {usersSlice} from '../features/users/users-list.slice';
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -12,6 +14,8 @@ export const store = configureStore({
         authentication: authenticationReducer,
         login: loginReducer,
         debugSlice: debugReducer,
+        usersSlice: usersListReducer,
+        userDetailSlice: userDetailReducer,
     },
     middleware: [sagaMiddleware
     ],
