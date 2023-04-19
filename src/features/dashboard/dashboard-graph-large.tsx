@@ -6,6 +6,7 @@ import './card-flip.css';
 
 export function UsersRegistrationGraph() {
     const [isFlipped, setIsFlipped] = useState(false); // State to track the flip status
+
     const handleFlipClick = () => {
         setIsFlipped(!isFlipped);
     };
@@ -46,7 +47,7 @@ export function UsersRegistrationGraph() {
         }
     };
 
-    const dataRevenue = [
+    const dataRevenueMonth = [
         ['Year', 'Sales',],
         ['Jan', 15000,],
         ['Feb', 12500,],
@@ -57,7 +58,17 @@ export function UsersRegistrationGraph() {
         ['Jul', 16000,],
 
     ];
-    const dataUsers = [
+
+    const dataRevenueWeek = [
+        ['Week', 'Sales',],
+        ['Sun', 1200,],
+        ['Mon', 500,],
+        ['Tue', 9000,],
+        ['Wed', 8200,],
+        ['Thus', 6000,],
+
+    ];
+    const dataUsersMonth = [
         ['Year', 'users',],
         ['Jan', 21,],
         ['Feb', 50,],
@@ -68,7 +79,17 @@ export function UsersRegistrationGraph() {
         ['Jul', 2,],
 
     ];
+    const dataUsersWeek = [
+        ['Year', 'users',],
+        ['Sun', 2,],
+        ['Mon', 8,],
+        ['Tue', 4,],
+        ['Wed', 4,],
+        ['Thus', 7,],
 
+    ];
+    const [revenueData, setRevenueData] = useState(dataRevenueMonth);
+    const [userData, setUserData] = useState(dataUsersMonth);
     return <>
         <div className='col-span-2  h-96 w-full  pb-0 ' style={{perspective: '1000px'}}>
 
@@ -88,8 +109,8 @@ export function UsersRegistrationGraph() {
 
                                     <Lozenge
                                         appearance="new">New!</Lozenge>
-                                    <span className="pl-2"> <Button spacing="compact" >Week</Button>  </span>
-                                    <span className="pl-0"> <Button spacing="compact" >Months</Button>  </span>
+                                    <span className="pl-2"> <Button onClick={()=>setUserData(dataUsersWeek)} spacing="compact" >Week</Button>  </span>
+                                    <span className="pl-0"> <Button onClick={()=>setUserData(dataUsersMonth)} spacing="compact" >Months</Button>  </span>
                                 </div>
                                 <div
                                     className="text-xs col-span-4  text-gray-400 font-medium">{'A simple graph showing flow of new users'}</div>
@@ -105,7 +126,7 @@ export function UsersRegistrationGraph() {
                 <div className="w-full bg-slate-100">
                     <Chart
                         chartType="AreaChart"
-                        data={dataUsers}
+                        data={userData}
                         options={options}
                         height="18rem"
                         width='100%'
@@ -121,8 +142,8 @@ export function UsersRegistrationGraph() {
                             <div className="grid grid-cols-3 gap-1">
                                 <div
                                     className=" col-span-3 text-base accent-neutral-600 font-medium ">{'Ads revenue'}
-                                    <span className="pl-2"> <Button spacing="compact" > Week</Button>  </span>
-                                    <span className="pl-0"> <Button spacing="compact" >Month</Button>  </span>
+                                    <span className="pl-2"> <Button onClick={()=>setRevenueData(dataRevenueWeek)} spacing="compact" > Week</Button>  </span>
+                                    <span className="pl-0"> <Button onClick={()=>setRevenueData(dataRevenueMonth)} spacing="compact" >Month</Button>  </span>
 
                                 </div>
                                 <div
@@ -139,7 +160,7 @@ export function UsersRegistrationGraph() {
                 <div className="w-full bg-slate-100">
                     <Chart
                         chartType="AreaChart"
-                        data={dataRevenue}
+                        data={revenueData}
                         options={options2}
                         height="18rem"
                         width='100%'

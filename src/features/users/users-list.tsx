@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 
 import Breadcrumbs, {BreadcrumbsItem} from '@atlaskit/breadcrumbs';
@@ -18,17 +18,20 @@ import {createKey} from "../../shared/table-helper";
 import {timeAgo} from "../../shared/time-ago/time-ago";
 import Lozenge from "@atlaskit/lozenge";
 import Avatar from "@atlaskit/avatar";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {getUsersStart} from "./users-list.slice";
+import {User} from "../../shared/models";
 
 const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
+        <BreadcrumbsItem text="Dashboard" key="Some projecdt"/>
         <BreadcrumbsItem text="Users" key="Some project"/>
-        <BreadcrumbsItem text="List" key="Parent page"/>
+        <BreadcrumbsItem text="List of user" key="Parent page"/>
     </Breadcrumbs>
 );
 const actionsContent = (
     <ButtonGroup>
-        <Button appearance="primary">Invite Administrators</Button>
+        <Button isDisabled appearance="primary">Invite Administrators</Button>
     </ButtonGroup>
 );
 const barContent = (
@@ -45,19 +48,32 @@ const barContent = (
 export function UsersList() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+
+    const {loading, error, users} = useAppSelector((state) => state.usersSlice);
+
+    useEffect(() => {
+        dispatch(getUsersStart());
+    }, [])
+
+
+    if (error) {
+        return <div>{error.status} {error.message}</div>
+    }
+
     return <div className='container px-12 mx-auto'>
         <PageHeader
             breadcrumbs={breadcrumbs}
             actions={actionsContent}
-            bottomBar={barContent}
+            //bottomBar={barContent}
         >
-            Users - list of all our app's registered users
+            Users - list of all our app's users
         </PageHeader>
         <div className="mt-10">
             <DynamicTable
                 head={tableHead({withWidth: true})}
-                  rows={rows(ListOfUser, navigate, dispatch)}
-                rowsPerPage={4}
+                  rows={rows(users, navigate, dispatch)}
+                isLoading={loading}
+                rowsPerPage={8}
                 defaultPage={1}
                 isFixedSize={false}
                 loadingSpinnerSize="large"
@@ -129,53 +145,55 @@ export const tableHead = (props: {
     } as { cells: HeadCellType[] };
 };
 
-const rows = (users: UserListInterface[] | undefined, navigate: NavigateFunction, dispatch: AppDispatch,) =>
-    users?.map((user: UserListInterface, index: number) => ({
-        key: `row-${index}-${user.id}`,
+const rows = (users: User[] | undefined, navigate: NavigateFunction, dispatch: AppDispatch,) =>
+    users?.map((user: User, index: number) => ({
+        key: `row-${index}-${user.uid}`,
         cells: [
             {
-                key: createKey('Check' + user.id.toString()),
+                key: createKey('Check' + user.uid.toString()),
                 content: <Checkbox
                     onClick={() => {
                     }}
                 ></Checkbox>,
             },
             {
-                key: createKey(user.id + user.name),
+                key: createKey(user.uid + 'photo'),
                 content: <div
-                    onClick={() => navigate('/Users/user-detail/' + user.id)}
+                    onClick={() => navigate('/Users/user-detail/' + user.uid)}
                     className='flex gap-2'>
 
-                    <Avatar size="small" src={'user.photoUrl'}/>
+                    <Avatar size="small" src={user.photoUrl}/>
                     <label>
-                        {user.name}
+                        {user.displayName?user.displayName: user.firstName+ " " + user.lastName} {" "}
+                        {user.disabled && <Lozenge>Disabled</Lozenge>}
                     </label>
                 </div>
             }, {
-                key: createKey(user.id + user.phoneNumber),
+                key: createKey(user.uid + user.phoneNumber),
                 content: user.phoneNumber,
             },
             {
-                key: createKey(user.id + user.lastSignedIn),
-                content: timeAgo(user.lastSignedIn),
+                key: createKey(user.uid + 'uid'),
+                content: user.uid
+                //content: timeAgo(user.lastSignedIn),
             },
             {
-                key: createKey(user.id + user.createdOn),
+                key: createKey(user.uid + user.createdOn),
                 content: timeAgo(user.createdOn),
             },
             {
-                key: createKey(user.id + user.updatedOn),
+                key: createKey(user.uid + user.updatedOn),
                 content: timeAgo(user.updatedOn),
             },
             {
-                key: createKey('role' + user.id),
+                key: createKey('role' + user.uid),
                 content: (
                     <Lozenge > {"User"}</Lozenge>
                 ),
             }, {
-                key: createKey('view' + user.id),
+                key: createKey('view' + user.uid),
                 content: (
-                    <Button onClick={() => navigate('/Users/user-detail/' + user.id)}>View</Button>
+                    <Button onClick={() => navigate('/Users/user-detail/' + user.uid)}>View</Button>
                 ),
             },
         ],

@@ -29,7 +29,7 @@ export interface Business {
     coverPhotoUrl: string;
     galleryPhotos: string[];
     //reviews: Reviews[];
-    products: Product[];
+   // products: Product[];
     businessManager: User,
     createdOn: string;
     updatedOn: string;
@@ -53,23 +53,27 @@ export interface User {
         countryId: string;
         countryName: string;
     };
-    dateOfBirth: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    photoUrl: string;
-
-    isBlocked: string;
-    isMarkedToBeDeleted: string;
-
-    uid: string;
-    savedItems: Product[];
-    favorites: Business[];
-    recentlyViewed: Product[];
-    savedAddresses: SavedAddress[];
     createdOn: string;
+    customClaims: Map<string, any>;
+    dateOfBirth: string;
+    disabled: boolean;
+    displayName: string;
+    email: string | null;
+    emailVerified: boolean;
+    firstName: string;
+    isBlocked: boolean;
+    isMarkedToBeDeleted: boolean;
+    lastName: string;
+    metadata: {
+        creationTime: string;
+    };
+    phoneNumber: string;
+    photoURL: string;
+    photoUrl: string;
+    uid: string;
     updatedOn: string;
 }
+
 interface SavedAddress{
     id:string;
     address:string;

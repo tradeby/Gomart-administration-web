@@ -5,14 +5,20 @@ import {SummaryTabPanel} from "./tabs/summary-tab";
 import {SavedProductsTab} from "./tabs/saved-products";
 import {FollowedBusinessesTab} from "./tabs/followed-businesses-tab";
 import {RecentlyViewedTab} from "./tabs/recently-viewed-tab";
+import {useNavigate} from "react-router-dom";
 
 
 
 
 export default function TabsDefaultExample() {
+    const navigate = useNavigate();
     return (
         <Tabs
-            onChange={(index) => console.log('Selected Tab', index + 1)}
+            onChange={(index) => {
+                if(index ===4){
+                    navigate('/businesses/business-detail/23sdfewi2');
+                }
+            }}
             id="default"
         >
             <TabList>
@@ -26,7 +32,7 @@ export default function TabsDefaultExample() {
             <TabPanel> <SavedProductsTab/> </TabPanel>
             <TabPanel> <RecentlyViewedTab/> </TabPanel>
             <TabPanel> <FollowedBusinessesTab/></TabPanel>
-            <TabPanel> <div> Own Businsess information {'==>'} will redirect to business detail page on click </div> </TabPanel>
+
 
         </Tabs>
     );

@@ -16,11 +16,11 @@ export function BusinessDetailTabs() {
             <TabList>
                 <Tab>Business Information</Tab>
                 <Tab>Listed Products</Tab>
-                <Tab >Transaction History <Lozenge appearance={'new'}>Coming Soon</Lozenge> </Tab>
+                {/*<Tab >Transaction History <Lozenge appearance={'new'}>Coming Soon</Lozenge> </Tab>*/}
             </TabList>
             <TabPanel> <BusinessInformationPanel/> </TabPanel>
             <TabPanel> <ListedProductsTab/> </TabPanel>
-            <TabPanel> <div> Coming Soon!</div> </TabPanel>
+
 
         </Tabs>
     );

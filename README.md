@@ -36,3 +36,18 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 @atlaskit/atlassian-navigation
 npm install @atlaskit/avatar @atlaskit/banner @atlaskit/breadcrumbs @atlaskit/checkbox @atlaskit/css-reset @atlaskit/datetime-picker @atlaskit/dropdown-menu @atlaskit/dynamic-table @atlaskit/empty-state @atlaskit/flag @atlaskit/form @atlaskit/icon @atlaskit/inline-edit @atlaskit/logo @atlaskit/lozenge @atlaskit/menu @atlaskit/modal-dialog @atlaskit/page-header @atlaskit/page-layout @atlaskit/popup @atlaskit/progress-bar @atlaskit/progress-indicator @atlaskit/progress-tracker @atlaskit/radio @atlaskit/section-message @atlaskit/select @atlaskit/side-navigation @atlaskit/tabs @atlaskit/textarea @atlaskit/textfield @atlaskit/theme @atlaskit/tokens @emotion/core @reduxjs/toolkit @testing-library/jest-dom @testing-library/user-event @types/jest redux-saga
+
+
+	= Schema for firestore
+		- Users
+		   basic user information
+		   currentBusinessId
+			- recently viewed
+			- saved products
+			- followed businesses
+
+		- Businesses
+			basic business information
+			- products
+			- users
+			- transaction history
