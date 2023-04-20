@@ -12,6 +12,7 @@ import UserDetailTabs from "./tabs-top-bar";
 import {getUsersStart} from "../users-list.slice";
 import {loadUserStart} from "./user-detail.slice";
 import {useNavigate, useParams} from "react-router-dom";
+import Lozenge from "@atlaskit/lozenge";
 
 const breadcrumbs =(props:{navigate:any})=>{
     return (
@@ -51,7 +52,9 @@ export function UserDetails() {
             breadcrumbs={breadcrumbs({navigate:navigate})}
             actions={actionsContent}
         >
-         {user?.displayName ? user?.displayName : user?.firstName + ' ' + user?.lastName} - {user?.uid}
+            {user?.displayName ? user?.displayName :(user?.firstName)? user.firstName + " " + user.lastName: user?.email?user?.email:'Undefined'} {" "}- {user?.uid} {user?.disabled && <Lozenge>Disabled</Lozenge>}
+            {" "}{user?.email &&
+                <Lozenge appearance='inprogress'> {"Administrator"}</Lozenge>}
         </PageHeader>
 
         <UserDetailTabs/>

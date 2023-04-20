@@ -66,6 +66,7 @@ export interface User {
     lastName: string;
     metadata: {
         creationTime: string;
+        lastSignInTime: string;
     };
     phoneNumber: string;
     photoURL: string;

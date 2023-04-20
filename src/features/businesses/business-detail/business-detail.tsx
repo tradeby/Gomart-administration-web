@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 import Breadcrumbs, {BreadcrumbsItem} from '@atlaskit/breadcrumbs';
 import ButtonGroup from '@atlaskit/button/button-group';
@@ -8,6 +8,10 @@ import __noop from '@atlaskit/ds-lib/noop';
 
 import PageHeader from '@atlaskit/page-header';
 import {BusinessDetailTabs} from "./tabs/business-detail-tabs";
+import {useAppDispatch, useAppSelector} from "../../../app/hooks";
+import {useNavigate, useParams} from "react-router-dom";
+import {loadUserStart} from "../../users/user-detail/user-detail.slice";
+import {loadBusinessStart} from "./business-detail.slice";
 
 const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
@@ -24,12 +28,28 @@ const actionsContent = (
 
 
 export function BusinessDetail() {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const {businessId} = useParams();
+    const {loading, error, business} = useAppSelector((state) => state.businessDetailSlice);
+
+    useEffect(() => {
+        dispatch(loadBusinessStart({businessId: businessId as string}));
+    }, [])
+
+    if (loading) {
+        return <div>Loading!!</div>
+    }
+    if (error) {
+        return <div>{error.status} {error.message}</div>
+    }
+
     return <div className="container mx-auto px-10">
         <PageHeader
             breadcrumbs={breadcrumbs}
             actions={actionsContent}
         >
-            Business Detail - Auto Car Repair Center
+            Business Detail - {business?.companyName} - {business?.id}
         </PageHeader>
 
         <BusinessDetailTabs/>
