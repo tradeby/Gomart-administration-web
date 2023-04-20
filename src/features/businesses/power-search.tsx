@@ -61,7 +61,9 @@ export function PowerSearch() {
         <div className='container px-12 mx-auto'>
             <PageHeader
                 breadcrumbs={breadcrumbs}
-
+                actions={   <ButtonGroup>
+                    <Button  appearance="primary">Create new Business</Button>
+                </ButtonGroup>}
                 bottomBar={barContent}
             >
                 Power Search - Search a list of registered businesses & Products
