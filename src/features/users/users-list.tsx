@@ -176,7 +176,7 @@ const rows = (users: User[] | undefined, navigate: NavigateFunction, dispatch: A
                     <Avatar size="small" src={user.photoUrl ? user.photoUrl : user.photoURL}/>
                     <label>
                         {user.displayName ? user.displayName :(user?.firstName)? user.firstName + " " + user.lastName: user?.email?user?.email:'Undefined'} {" "}
-                        {user.disabled && <Lozenge>Disabled</Lozenge>}
+                        {user.disabled && <Lozenge>Disabled</Lozenge>}{user?.businessId && <Lozenge appearance={'new'} isBold>Merchant </Lozenge>}
                     </label>
                 </div>
             }, {

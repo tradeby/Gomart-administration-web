@@ -8,6 +8,7 @@ import userDetailReducer from '../features/users/user-detail/user-detail.slice';
 import usersListReducer from '../features/users/users-list.slice';
 import businessListReducer from '../features/businesses/business.slice';
 import businessDetailReducer from '../features/businesses/business-detail/business-detail.slice';
+import listedProductsReducer from '../features/businesses/business-detail/tabs/listed-products/listed-products.slice';
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -18,7 +19,8 @@ export const store = configureStore({
         usersSlice: usersListReducer,
         userDetailSlice: userDetailReducer,
         businessesSlice: businessListReducer,
-        businessDetailSlice: businessDetailReducer
+        businessDetailSlice: businessDetailReducer,
+        listedProductsSlice: listedProductsReducer
     },
     middleware: [sagaMiddleware
     ],

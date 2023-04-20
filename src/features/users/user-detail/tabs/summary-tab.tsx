@@ -114,7 +114,7 @@ export function SummaryTabPanel() {
                             </div>
                         </div>
                         <div className="px-4 pt-20 py-2 bg-white">
-                            <h2 className="text-2xl text-center font-bold text-gray-800">  {user?.displayName ? user?.displayName :(user?.firstName)? user.firstName + " " + user.lastName: user?.email?user?.email:'Undefined'} {" "}</h2>
+                            <h2 className="text-2xl text-center font-bold text-gray-800">  {user?.displayName ? user?.displayName :(user?.firstName)? user.firstName + " " + user.lastName: user?.email?user?.email:'Undefined'} {" "} {user?.businessId && <Lozenge appearance={'new'} isBold>Merchant </Lozenge>}</h2>
                             <p className="text-gray-600 text-lg text-center">{user?.phoneNumber}</p>
                             <p className="text-gray-600 text-md text-center">{/*20 years (14-OCt-2023)*/}{formatAgeDateString(user?.dateOfBirth as string)}</p>
                           {/*  <div className=" flex justify-center">

@@ -1,5 +1,5 @@
 import Form from "@atlaskit/form";
-import InlineEditDefault, {InlineDatePicker} from "../../../../shared/inline-textfield";
+import InlineEditDefault, {InlineDatePicker} from "../../../../../shared/inline-textfield";
 import ButtonGroup from "@atlaskit/button/button-group";
 import LoadingButton from "@atlaskit/button/loading-button";
 import Button from "@atlaskit/button/standard-button";
@@ -7,7 +7,9 @@ import Lozenge from "@atlaskit/lozenge";
 import SettingsIcon from '@atlaskit/icon/glyph/settings'
 import React from "react";
 import {MapSection} from "./google-map-section";
-import {useAppSelector} from "../../../../app/hooks";
+import {useAppSelector} from "../../../../../app/hooks";
+import {useNavigate} from "react-router-dom";
+import {Product} from "../../../../../shared/models";
 
 interface BusinessInformationFormProp {
     businessName: string,
@@ -23,16 +25,20 @@ interface BusinessInformationFormProp {
 }
 
 export function BusinessInformationPanel() {
+    const navigate = useNavigate();
     const {loading, error, business} = useAppSelector((state) => state.businessDetailSlice);
     const submitForm = (data: BusinessInformationFormProp) => {
         //console.log('submit form', data)
 
     }
 
-    /*
         if (loading) {
             return <p>Loading!</p>
-        }*/
+        }
+
+    if (error) {
+        return <p>{error.message}</p>
+    }
     return (
         <>
             <div className='grid grid-cols-12 pb-20 gap-x-20 w-full'>
@@ -152,7 +158,7 @@ export function BusinessInformationPanel() {
 
                     <div className="max-w-md my-4 mx-auto p-2 rounded-md overflow-hidden shadow-md">
                         <div className="flex items-center space-x-4 w-full">
-                            <div className="flex items-center w-full">
+                            <div onClick={()=>navigate('/Users/user-detail/'+business?.businessManager.uid)} className="flex cursor-pointer items-center w-full">
                                 <img src={business?.businessManager.photoURL} alt="Avatar"
                                      className="rounded-full h-10 w-10"/>
                                 <span

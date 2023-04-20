@@ -5,6 +5,7 @@ import {watchGetUsers} from "../features/users/users-list.saga";
 import {watchLoadUser} from "../features/users/user-detail/user-detail.saga";
 import businessesSaga from "../features/businesses/business.saga";
 import businessDetailSaga from "../features/businesses/business-detail/business-detail.saga";
+import listedProductSaga from "../features/businesses/business-detail/tabs/listed-products/listed-products.saga";
 
 
 export function* rootSaga() {
@@ -15,6 +16,7 @@ export function* rootSaga() {
         fork(watchLoadUser),
         fork(businessesSaga),
         fork(businessDetailSaga),
+        fork(listedProductSaga),
         //fork(studentsListSaga),
 
     ])

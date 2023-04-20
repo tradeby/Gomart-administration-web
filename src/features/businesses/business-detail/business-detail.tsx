@@ -13,11 +13,11 @@ import {useNavigate, useParams} from "react-router-dom";
 import {loadUserStart} from "../../users/user-detail/user-detail.slice";
 import {loadBusinessStart} from "./business-detail.slice";
 
-const breadcrumbs = (
+const breadcrumbs =(props:{navigate:any, businessName:string})=>(
     <Breadcrumbs onExpand={__noop}>
-        <BreadcrumbsItem text="Dashboard" key="Home"/>
-        <BreadcrumbsItem text="Businesses" key="Users"/>
-        <BreadcrumbsItem text="Auto Car Repair Center" key="userId"/>
+        <BreadcrumbsItem  onClick={()=>props.navigate('/')} text="Dashboard" key="Home"/>
+        <BreadcrumbsItem onClick={()=>props.navigate('/businesses/power-search')} text="Businesses" key="Users"/>
+        <BreadcrumbsItem text={props.businessName} key="userId"/>
     </Breadcrumbs>
 );
 const actionsContent = (
@@ -46,10 +46,13 @@ export function BusinessDetail() {
 
     return <div className="container mx-auto px-10">
         <PageHeader
-            breadcrumbs={breadcrumbs}
+            breadcrumbs={breadcrumbs({navigate:navigate, businessName: business?.companyName as string})}
             actions={actionsContent}
         >
-            Business Detail - {business?.companyName} - {business?.id}
+            <div className="flex">
+                <img src={business?.logoUrl} alt="Business Logo"
+                     className="rounded-full mr-2 h-10 w-10 object-cover"/> Business Detail - {business?.companyName} - {business?.id}
+            </div>
         </PageHeader>
 
         <BusinessDetailTabs/>

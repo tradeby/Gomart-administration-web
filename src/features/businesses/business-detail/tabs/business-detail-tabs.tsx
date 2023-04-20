@@ -1,8 +1,8 @@
 import React from "react";
 
 import Tabs, {Tab, TabList, TabPanel} from '@atlaskit/tabs';
-import {BusinessInformationPanel} from "./business-information-tab";
-import {ListedProductsTab} from "./listed-products-tab";
+import {BusinessInformationPanel} from "./business-information/business-information-tab";
+import {ListedProductsTab} from "./listed-products/listed-products-tab";
 import Lozenge from "@atlaskit/lozenge";
 
 
