@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Breadcrumbs, {BreadcrumbsItem} from "@atlaskit/breadcrumbs";
 import __noop from "@atlaskit/ds-lib/noop";
 import Button from "@atlaskit/button/standard-button";
@@ -9,9 +9,15 @@ import Form from "@atlaskit/form";
 import InlineEditDefault, {InlineDatePicker} from "../../shared/inline-textfield";
 import ButtonGroup from "@atlaskit/button/button-group";
 import LoadingButton from "@atlaskit/button/loading-button";
+import placeHolderPhoto from '../../assets/place-holder-photo.svg';
 import Lozenge from "@atlaskit/lozenge";
 import {useNavigate} from "react-router-dom";
 import Pagination from '@atlaskit/pagination';
+import {getUsersStart} from "../users/users-list.slice";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {loadBusinessesStart} from "./business.slice";
+import {Business} from "../../shared/models";
+
 const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
         <BreadcrumbsItem text="Dashboard" key="Some project"/>
@@ -35,7 +41,22 @@ const barContent = (
 );
 
 export function PowerSearch() {
-     const isPresearch = true;
+    const isPresearch = true;
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    const {loading, error, businesses} = useAppSelector((state) => state.businessesSlice);
+
+    useEffect(() => {
+        dispatch(loadBusinessesStart());
+    }, [])
+
+
+    if (error) {
+        return <div>{error.status} {error.message}</div>
+    }
+
+
     return <>
         <div className='container px-12 mx-auto'>
             <PageHeader
@@ -47,16 +68,17 @@ export function PowerSearch() {
             </PageHeader>
             <div className="mt-10">
                 <div className='grid grid-cols-12 pb-20 gap-x-20 w-full'>
-                    {isPresearch?
+                    {isPresearch ?
                         <div className='col-span-12'>
-                            <PreSearchScreen/>
+                            {loading && <PreSearchScreenLoading/>}
+                            {!loading && <PreSearchScreen businesses={businesses}/>}
                         </div>
                         :
 
                         <div className='col-span-12 '>
-                        <SearchedBusinessSection/>
-                        <SavedProductsSection/>
-                    </div>}
+                            <SearchedBusinessSection/>
+                            <SavedProductsSection/>
+                        </div>}
 
 
                 </div>
@@ -71,7 +93,7 @@ export function PowerSearch() {
 function ProductCard() {
     return <div className="w-48 px-0 mr-4 mb-8 hover:shadow-md cursor-pointer">
         <div className="bg-white  shadow">
-            <img src="https://placehold.it/400x400" alt="Restaurant Image"
+            <img src={placeHolderPhoto} alt="Restaurant Image"
                  className="w-full "/>
             <div className="p-4">
                 <h3 className=" font-semibold mb-2">Restaurant Name 3</h3>
@@ -81,15 +103,33 @@ function ProductCard() {
     </div>;
 }
 
-function BusinessCard() {
+function BusinessCard(prop: { business: Business }) {
     const navigate = useNavigate();
-    return <div onClick={()=>navigate('/businesses/business-detail/23sdfewi2')} className="w-52 hover:shadow-md px-0 mr-4 cursor-pointer px-1 mb-8">
+    return <div onClick={() => navigate('/businesses/business-detail/' + prop.business.id)}
+                className=" hover:shadow-md px-0 mr-4 cursor-pointer px-1 mb-8">
         <div className="bg-white  shadow">
-            <img src="https://placehold.it/400x400" alt="Restaurant Image"
+            <img src={prop.business?.logoUrl ? prop.business?.logoUrl : placeHolderPhoto} alt="Restaurant Image"
+                 className=" rounded-full " style={{width:'12rem', height: '12rem'}}/>
+            <div className="p-4">
+                <h3 className=" font-semibold mb-2">{prop.business.companyName}</h3>
+                <Lozenge>{prop.business.businessCategory}</Lozenge>
+            </div>
+        </div>
+    </div>;
+}
+
+function BusinessCardLoading() {
+    const navigate = useNavigate();
+    return <div className="w-52 hover:shadow-sm shadow-sm px-0 mr-4 cursor-pointer px-1 mb-8">
+        <div className="bg-white  ">
+            <img src={placeHolderPhoto} alt="Restaurant Image"
                  className="w-full rounded-full "/>
             <div className="p-4">
-                <h3 className=" font-semibold mb-2">Restaurant Name 3</h3>
-                <Lozenge>Business</Lozenge>
+
+                <div className="h-2 bg-slate-200 rounded"></div>
+                <div className="grid grid-cols-7 pt-2 gap-4">
+                    <div className="h-4 bg-slate-200 rounded col-span-4"></div>
+                </div>
             </div>
         </div>
     </div>;
@@ -108,7 +148,7 @@ function SavedProductsSection() {
             <ProductCard/>
 
         </div>
-       {/* <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} />*/}
+        {/* <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} />*/}
     </>
 }
 
@@ -117,35 +157,43 @@ function SearchedBusinessSection() {
         <p className="text-lg  pt-0 pb-0 font-semibold"> Searched for "Musa" & found 55 Businesses</p>
         <p className="text-sm text-gray-400 pt-0 pb-3 "> Search took 10ms</p>
         <div className="flex py-0 my-0 flex-wrap mx-0 px-0">
+            {/*<BusinessCard/>
             <BusinessCard/>
             <BusinessCard/>
             <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
+            <BusinessCard/>*/}
 
 
         </div>
-       {/* <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} />*/}
+        {/* <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} />*/}
     </>
 }
 
 
-function PreSearchScreen() {
+function PreSearchScreen(props: { businesses: Business[] }) {
     return <>
         <div className="flex py-0 my-0 flex-wrap mx-0 px-0">
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
-
+            {props.businesses.map(((bu) => <BusinessCard key={bu.id} business={bu}/>))}
 
         </div>
-         <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]} />
+        <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}/>
+    </>
+}
+
+function PreSearchScreenLoading() {
+    return <>
+        <div className="flex py-0 my-0 flex-wrap mx-0 px-0">
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+            <BusinessCardLoading/>
+        </div>
+        <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}/>
     </>
 }

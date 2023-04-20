@@ -19,8 +19,10 @@ import {timeAgo} from "../../shared/time-ago/time-ago";
 import Lozenge from "@atlaskit/lozenge";
 import Avatar from "@atlaskit/avatar";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {getUsersStart} from "./users-list.slice";
+import {getUsersStart, searchUser} from "./users-list.slice";
 import {User} from "../../shared/models";
+import {formatPhoneNumber} from "../../shared/phone-number-formatter/format-phone";
+import {debounce} from 'lodash'; // Import debounce function from lodash or any other debounce library
 
 const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
@@ -34,23 +36,23 @@ const actionsContent = (
         <Button isDisabled appearance="primary">Invite Administrators</Button>
     </ButtonGroup>
 );
-const barContent = (
-    <div style={{display: 'flex'}}>
-        <div style={{flex: '0 0 400px'}}>
-            <TextField isCompact placeholder="Search users, names, email, phone number etc" aria-label="Search users"/>
-        </div>
-        <div style={{flex: '0 0 200px', marginLeft: 8}}>
-            <Button appearance="primary">Search</Button>
-        </div>
-    </div>
-);
 
 export function UsersList() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    const {loading, error, users} = useAppSelector((state) => state.usersSlice);
+    const {loading, error, users, searchTerm, searchedUser} = useAppSelector((state) => state.usersSlice);
 
+    // Define a debounced function for slicing the input value
+    const handleInputSlice = debounce((value: string) => {
+        dispatch(searchUser({searchTerm: value})); // Update the sliced value in state
+    }, 300); // Debounce time in milliseconds
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;// Update the input value in state
+        dispatch(searchUser({searchTerm: inputValue})); // U
+     //   handleInputSlice(inputValue); // Invoke the debounced function to slice the input value
+    };
     useEffect(() => {
         dispatch(getUsersStart());
     }, [])
@@ -64,23 +66,32 @@ export function UsersList() {
         <PageHeader
             breadcrumbs={breadcrumbs}
             actions={actionsContent}
-            //bottomBar={barContent}
+            bottomBar={
+                <div style={{display: 'flex'}}>
+                    <div style={{flex: '0 0 400px'}}>
+                        <TextField value={searchTerm === null ? '' : searchTerm as string} onChange={handleInputChange}
+                                   isCompact placeholder="Search users, names, phone numbers, Uids etc"
+                                   aria-label="Search users"/>
+                    </div>
+                   {/* <div style={{flex: '0 0 200px', marginLeft: 8}}>
+                        <Button appearance="primary">Search</Button>
+                    </div>*/}
+                </div>}
         >
             Users - list of all our app's users
         </PageHeader>
         <div className="mt-10">
             <DynamicTable
                 head={tableHead({withWidth: true})}
-                  rows={rows(users, navigate, dispatch)}
+                rows={rows((searchTerm === null) ? users : searchedUser as User[], navigate, dispatch)}
                 isLoading={loading}
-                rowsPerPage={8}
+                rowsPerPage={14}
                 defaultPage={1}
                 isFixedSize={false}
                 loadingSpinnerSize="large"
                 isRankable={false}
             />
         </div>
-
 
 
     </div>
@@ -115,7 +126,7 @@ export const tableHead = (props: {
             },
             {
                 key: 'lastSignedIn',
-                content: 'Last signed in',
+                content: 'Uid',
                 shouldTruncate: true,
                 width: props.withWidth ? 10 : undefined,
             },
@@ -125,8 +136,8 @@ export const tableHead = (props: {
                 width: props.withWidth ? 10 : undefined,
             },
             {
-                key: 'lastUpdatedOn',
-                content: 'Last updated on',
+                key: 'lastSignIn',
+                content: 'Last signed in',
                 width: props.withWidth ? 15 : undefined,
             },
             {
@@ -162,15 +173,15 @@ const rows = (users: User[] | undefined, navigate: NavigateFunction, dispatch: A
                     onClick={() => navigate('/Users/user-detail/' + user.uid)}
                     className='flex gap-2'>
 
-                    <Avatar size="small" src={user.photoUrl}/>
+                    <Avatar size="small" src={user.photoUrl ? user.photoUrl : user.photoURL}/>
                     <label>
-                        {user.displayName?user.displayName: user.firstName+ " " + user.lastName} {" "}
-                        {user.disabled && <Lozenge>Disabled</Lozenge>}
+                        {user.displayName ? user.displayName :(user?.firstName)? user.firstName + " " + user.lastName: user?.email?user?.email:'Undefined'} {" "}
+                        {user.disabled && <Lozenge>Disabled</Lozenge>}{user?.businessId && <Lozenge appearance={'new'} isBold>Merchant </Lozenge>}
                     </label>
                 </div>
             }, {
                 key: createKey(user.uid + user.phoneNumber),
-                content: user.phoneNumber,
+                content: <p> {formatPhoneNumber(user.phoneNumber)}</p>,
             },
             {
                 key: createKey(user.uid + 'uid'),
@@ -179,17 +190,15 @@ const rows = (users: User[] | undefined, navigate: NavigateFunction, dispatch: A
             },
             {
                 key: createKey(user.uid + user.createdOn),
-                content: timeAgo(user.createdOn),
+                content: timeAgo(user?.metadata?.creationTime),
             },
             {
-                key: createKey(user.uid + user.updatedOn),
-                content: timeAgo(user.updatedOn),
+                key: createKey(user.uid + 'lastSignIn'),
+                content: timeAgo(user?.metadata?.lastSignInTime),
             },
             {
                 key: createKey('role' + user.uid),
-                content: (
-                    <Lozenge > {"User"}</Lozenge>
-                ),
+                content: !user?.email?<Lozenge> {"User"}</Lozenge>: <Lozenge appearance='inprogress'> {"Administrator"}</Lozenge>,
             }, {
                 key: createKey('view' + user.uid),
                 content: (

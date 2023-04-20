@@ -41,9 +41,15 @@ export interface Product {
     productName: string;
     productDescription: string;
     price: number;
-    productImageUrl: string;
+    callForPrice:boolean;
+    productImageUrls: string[];
+    specifications: ProductSpecifications[],
     createdOn: string;
     updatedOn: string;
+}
+interface ProductSpecifications{
+    title:string,
+    value: string
 }
 
 export interface User {
@@ -66,10 +72,12 @@ export interface User {
     lastName: string;
     metadata: {
         creationTime: string;
+        lastSignInTime: string;
     };
     phoneNumber: string;
     photoURL: string;
     photoUrl: string;
+    businessId:string;
     uid: string;
     updatedOn: string;
 }

@@ -23,5 +23,5 @@ export function timeAgo(value: string): string {
             }
         }
     }
-    return value;
+    return 'Never';
 }

@@ -1,11 +1,15 @@
 import Form from "@atlaskit/form";
-import InlineEditDefault, {InlineDatePicker} from "../../../../shared/inline-textfield";
+import InlineEditDefault, {InlineDatePicker} from "../../../../../shared/inline-textfield";
 import ButtonGroup from "@atlaskit/button/button-group";
 import LoadingButton from "@atlaskit/button/loading-button";
 import Button from "@atlaskit/button/standard-button";
 import Lozenge from "@atlaskit/lozenge";
 import SettingsIcon from '@atlaskit/icon/glyph/settings'
 import React from "react";
+import {MapSection} from "./google-map-section";
+import {useAppSelector} from "../../../../../app/hooks";
+import {useNavigate} from "react-router-dom";
+import {Product} from "../../../../../shared/models";
 
 interface BusinessInformationFormProp {
     businessName: string,
@@ -21,16 +25,20 @@ interface BusinessInformationFormProp {
 }
 
 export function BusinessInformationPanel() {
-
+    const navigate = useNavigate();
+    const {loading, error, business} = useAppSelector((state) => state.businessDetailSlice);
     const submitForm = (data: BusinessInformationFormProp) => {
         //console.log('submit form', data)
 
     }
 
-    /*
         if (loading) {
             return <p>Loading!</p>
-        }*/
+        }
+
+    if (error) {
+        return <p>{error.message}</p>
+    }
     return (
         <>
             <div className='grid grid-cols-12 pb-20 gap-x-20 w-full'>
@@ -44,13 +52,15 @@ export function BusinessInformationPanel() {
                                 </p>
                                 <div className='grid grid-cols-2 gap-x-8'>
                                     <div className='col-span-1 py-0'><InlineEditDefault
-                                        /* defaultValue={student?.firstName}*/
+                                        isDisabled
+                                         defaultValue={business?.companyName}
                                         name={'businessName'}
                                         isRequired label='Business Name'/>
                                     </div>
                                     <div className='col-span-1 py-0'>
                                         <InlineEditDefault
-                                            /*   defaultValue={student?.lastName}*/
+                                            isDisabled
+                                               defaultValue={business?.phoneNumber}
                                             name={'phoneNumber'}
                                             isRequired label='Phone Number'/></div>
 
@@ -61,13 +71,15 @@ export function BusinessInformationPanel() {
                                 </p>
                                 <div className='grid grid-cols-2 gap-x-8'>
                                     <div className='col-span-1 py-0'><InlineEditDefault
-                                        /* defaultValue={student?.firstName}*/
+                                        isDisabled
+                                         defaultValue={business?.openingTime}
                                         name={'openingTime'}
                                         isRequired label='Opening Time'/>
                                     </div>
                                     <div className='col-span-1 py-0'>
                                         <InlineEditDefault
-                                            /*   defaultValue={student?.lastName}*/
+                                            isDisabled
+                                            defaultValue={business?.closingTime}
                                             name={'closingTime'}
                                             isRequired label='Closing Time'/></div>
 
@@ -78,46 +90,56 @@ export function BusinessInformationPanel() {
                                 </p>
                                 <div className='grid grid-cols-2 gap-x-8'>
                                     <div className='col-span-2 py-2'>
-                                        <img src="https://placehold.it/500x100"  alt="Image 1"
-                                             className="rounded-lg w-full"/>
-                                    </div>
-                                    <div className='col-span-2 py-0'><InlineEditDefault
-                                        /* defaultValue={student?.firstName}*/
-                                        name={'Business Address'}
-                                        isRequired label='Business Address'/>
+                                        <MapSection lat={business?.map.latitude as number} lng={business?.map.longitude as number} zoom={14} height={'200px'}/>
                                     </div>
 
 
+                                </div>
+
+                                <div className='grid grid-cols-3 gap-x-8 w-full'>
+                                    <div className='col-span-1 py-0'><InlineEditDefault
+                                        isDisabled
+                                        defaultValue={business?.map.latitude.toString()}
+                                        name={'latitude'}
+                                        isRequired label='Latitude'/>
+                                    </div>
+                                    <div className='col-span-1 py-0'>
+                                        <InlineEditDefault
+                                            isDisabled
+                                             defaultValue={business?.map.longitude.toString()}
+                                            name={'Longitude'}
+                                            isRequired label='Longitude'/></div>
+                                    <div className='col-span-1 py-0'>
+                                        <InlineEditDefault
+                                            isDisabled
+                                              defaultValue={'14'}
+                                            name={'zoom'}
+                                            isRequired label='zoom'/></div>
+
+
+                                </div>
+
+                                <div className='col-span-2 py-0'><InlineEditDefault
+                                    isDisabled
+                                     defaultValue={business?.address}
+                                    name={'Business Address'}
+                                    isRequired label='Business Address'/>
                                 </div>
 
                                 <p className="text-lg pt-2 font-semibold"> Photos
                                 </p>
                                 <div className="grid grid-cols-2 gap-1 md:grid-cols-4">
-                                    <img src="https://placehold.it/500x400" alt="Image 1"
-                                         className="rounded-lg"/>
-                                    <img src="https://placehold.it/500x400" alt="Image 2"
-                                         className="rounded-lg"/>
-                                    <img src="https://placehold.it/500x400" alt="Image 3"
-                                         className="rounded-lg"/>
-                                    <img src="https://placehold.it/500x400" alt="Image 4"
-                                         className="rounded-lg"/>
-                                    <img src="https://placehold.it/500x400" alt="Image 5"
-                                         className="rounded-lg"/>
-                                    <img src="https://placehold.it/500x400" alt="Image 6"
-                                         className="rounded-lg"/>
-                                    <img src="https://placehold.it/500x400"
-                                         alt="Image 7" className="rounded-lg"/>
-                                    <img src="https://placehold.it/500x400"
-                                         alt="Image 8" className="rounded-lg"/>
+                                    {business?.galleryPhotos.map(ph => <img src={ph} alt="Image 1"
+                                                                            className="rounded-sm shadow object-cover h-48 w-48"/>)}
                                 </div>
 
 
-                                <div className='pt-4'><ButtonGroup>
+                                {/*<div className='pt-4'><ButtonGroup>
                                     <LoadingButton
                                         type="submit"
                                         appearance="primary"
-                                        /* isLoading={savingOperationOngoing}
-                                           isDisabled={savingOperationOngoing}*/
+                                         isLoading={savingOperationOngoing}
+                                           isDisabled={savingOperationOngoing}
                                     >
                                         Save
                                     </LoadingButton>
@@ -125,7 +147,7 @@ export function BusinessInformationPanel() {
                                         changes</Button>
                                 </ButtonGroup>
 
-                                </div>
+                                </div>*/}
 
                             </form>
                         )}
@@ -136,30 +158,31 @@ export function BusinessInformationPanel() {
 
                     <div className="max-w-md my-4 mx-auto p-2 rounded-md overflow-hidden shadow-md">
                         <div className="flex items-center space-x-4 w-full">
-                            <div className="flex items-center w-full">
-                                <img src="https://via.placeholder.com/50?text=Avatar" alt="Avatar"
+                            <div onClick={()=>navigate('/Users/user-detail/'+business?.businessManager.uid)} className="flex cursor-pointer items-center w-full">
+                                <img src={business?.businessManager.photoURL} alt="Avatar"
                                      className="rounded-full h-10 w-10"/>
-                                    <span className="ml-2 font-medium text-gray-800">Musa Suleiman Jahun</span>
+                                <span
+                                    className="ml-2 font-medium text-gray-800">{business?.businessManager?.displayName}</span>
                             </div>
                             <div className="flex items-center  pr-4 text-gray-500">
-                                Settings <SettingsIcon label={'settings icon'} />
+                                Settings <SettingsIcon label={'settings icon'}/>
                             </div>
                         </div>
                         <div className='grid grid-cols-2 gap-x-8'>
-                            <div className='col-span-2 py-2 justify-center'>
-                                <img src="https://placehold.it/600x200"  alt="Image 1"
-                                     className="w-full"/>
+                            <div className='col-span-2 py-2 justify-center '>
+                                <img src={business?.coverPhotoUrl} alt="Image 1"
+                                     className="w-full h-28 object-cover"/>
                             </div>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-1 py-5">
                             <div className="col-span-1 justify-center">
-                                <img src="https://placehold.it/400x400" alt="Business Logo"
-                                     className="rounded-full h-20 w-20"/>
+                                <img src={business?.logoUrl} alt="Business Logo"
+                                     className="rounded-full h-20 w-20 object-cover"/>
                             </div>
                             <div className="grid grid-rows-4 gap-0 col-span-3">
                                 <div className="flex items-center">
                                     <span className="font-medium text-gray-800">Business:</span>
-                                    <span className="ml-2 text-gray-600 col-span-2">Acme Corporation</span>
+                                    <span className="ml-2 text-gray-600 col-span-2">{business?.companyName}</span>
                                 </div>
                                 <div className="flex items-center">
                                     <span className="font-medium text-gray-800">Address:</span>
@@ -179,29 +202,16 @@ export function BusinessInformationPanel() {
 
                         <div className='grid grid-cols-2 gap-x-8'>
                             <div className='col-span-2 py-2'>
-                                <img src="https://placehold.it/700x200"  alt="Image 1"
-                                     className="rounded-md w-full"/>
+                                <MapSection lat={business?.map.latitude as number} lng={business?.map.longitude as number} zoom={13} height={'100px'}/>
                             </div>
                         </div>
                         <p className="text-lg pt-2 font-semibold"> View our gallery
                         </p>
                         <div className="grid grid-cols-2 gap-1 md:grid-cols-4">
-                            <img src="https://placehold.it/500x400" alt="Image 1"
-                                 className="rounded-sm"/>
-                            <img src="https://placehold.it/500x400" alt="Image 2"
-                                 className="rounded-sm"/>
-                            <img src="https://placehold.it/500x400" alt="Image 3"
-                                 className="rounded-sm"/>
-                            <img src="https://placehold.it/500x400" alt="Image 4"
-                                 className="rounded-sm"/>
-                            <img src="https://placehold.it/500x400" alt="Image 5"
-                                 className="rounded-sm"/>
-                            <img src="https://placehold.it/500x400" alt="Image 6"
-                                 className="rounded-sm"/>
-                            <img src="https://placehold.it/500x400"
-                                 alt="Image 7" className="rounded-sm"/>
-                            <img src="https://placehold.it/500x400"
-                                 alt="Image 8" className="rounded-sm"/>
+                            {business?.galleryPhotos.map(ph => <img src={ph} alt="Image 1"
+                                                                    className="rounded-sm shadow object-cover h-32 w-28"/>)}
+
+
                         </div>
                     </div>
 
