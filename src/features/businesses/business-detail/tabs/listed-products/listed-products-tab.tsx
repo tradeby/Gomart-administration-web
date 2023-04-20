@@ -8,6 +8,7 @@ import {loadBusinessStart} from "../../business-detail.slice";
 import {fetchListedProductsStart} from "./listed-products.slice";
 import {Product} from "../../../../../shared/models";
 import Lozenge from "@atlaskit/lozenge";
+import CreateProductDialog from "./product-detail/create-new-product-modal";
 
 
 export function ListedProductsTab() {
@@ -28,9 +29,7 @@ export function ListedProductsTab() {
 
     return <div className='w-full'>
         <PageHeader
-            actions={<ButtonGroup>
-                <Button appearance='primary'>Create new product</Button>
-            </ButtonGroup>}
+            actions={<CreateProductDialog/>}
         >
             <p className="text-lg pt-2 font-semibold"> List of products of this business
             </p>
