@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {FormEventHandler, Fragment, useState} from 'react';
 
 import {ErrorMessage, Field} from '@atlaskit/form';
 
@@ -13,6 +13,7 @@ interface InlineEditProps {
     isDisabled?: boolean | undefined;
     name?: string;
     autoCompleteIsDisabled?: boolean;
+    onChange?:FormEventHandler<HTMLInputElement>;
 }
 
 const InlineEditDefault = (props: InlineEditProps) => {
@@ -31,6 +32,7 @@ const InlineEditDefault = (props: InlineEditProps) => {
             name={props.name ?? props.label}
             label={props.label}
             defaultValue={props.defaultValue}
+
             isDisabled={props.isDisabled}
             isRequired={props.isRequired}
             validate={(value) => validate(value)}
@@ -38,7 +40,10 @@ const InlineEditDefault = (props: InlineEditProps) => {
             {({fieldProps, error, valid, meta}) => {
                 return (
                     <>
-                        <TextField type="text" autoComplete={props.autoCompleteIsDisabled?'off':'on'} {...fieldProps} />
+                        <TextField type="text" autoComplete={props.autoCompleteIsDisabled?'off':'on'}
+
+                                   {...fieldProps}
+                                   onChange={props.onChange}/>
                         {error && (
                             <ErrorMessage>
                                 {props.label} {error}
