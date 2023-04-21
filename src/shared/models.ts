@@ -48,6 +48,7 @@ export interface Product {
     updatedOn: string;
 }
 interface ProductSpecifications{
+    id:string,
     title:string,
     value: string
 }
