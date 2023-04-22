@@ -1,4 +1,4 @@
-import React, {ChangeEvent, Fragment, useCallback, useRef, useState} from 'react';
+import React, {ChangeEvent, Fragment, useCallback, useEffect, useRef, useState} from 'react';
 import ButtonGroup from '@atlaskit/button/button-group';
 import Button from '@atlaskit/button/standard-button';
 import Modal, {
@@ -26,6 +26,7 @@ import {Product} from "../../../../../../shared/models";
 import {useAppDispatch, useAppSelector} from "../../../../../../app/hooks";
 import {saveProductStart} from "./product.slice";
 import {FullScreenLoader} from "../../../../../../shared/loader/full-screen-loader";
+import {fetchListedProductsStart} from "../listed-products.slice";
 
 
 interface ProductSpecifications {
@@ -64,7 +65,7 @@ export default function CreateProductDialog() {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const {business} = useAppSelector((state) => state.businessDetailSlice);
-    const {saving, error} = useAppSelector((state) => state.productDetailSlice);
+    const {saving, error, savedSuccessfully} = useAppSelector((state) => state.productDetailSlice);
 
     const [isOpen, setIsOpen] = useState(false);
     const [width, setWidth] = useState('medium');
@@ -78,6 +79,10 @@ export default function CreateProductDialog() {
         },
         [setWidth, setIsOpen],
     );
+
+    useEffect(() => {
+        closeModal();
+    }, [savedSuccessfully])
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -244,10 +249,10 @@ export default function CreateProductDialog() {
             isPublished: product.isPublished,
             productImageUrls: ["https://firebasestorage.googleapis.com/v0/b/gomart-apps.appspot.com/o/other-files%2FOIP%20(4).jpg?alt=media&token=15f9ea14-6148-4ee7-8f3a-d6b89b1e8df1"],//for images we will have to upload them first
             specifications: product.specifications,
-            createdOn: "serverTimestamp() as Timestamp",
-            updatedOn: "serverTimestamp() as Timestamp",
+            createdOn: "",
+            updatedOn: "",
         };
-        dispatch(saveProductStart({product: prodToSave}))
+        dispatch(saveProductStart({product: prodToSave, images: imageFiles}))
     }
 
     return (
