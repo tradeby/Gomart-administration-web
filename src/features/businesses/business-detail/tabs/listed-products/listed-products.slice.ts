@@ -25,6 +25,14 @@ export const listedProductSlice = createSlice({
             state.loading = true;
             state.error = null;
         },
+        reFetchListedProductsStart: (state,action:PayloadAction<{businessId:string}>) => {
+            state.loading = false;
+            state.error = null;
+        },
+        deleteProduct: (state,action:PayloadAction<{businessId:string, productId:string}>) => {
+            state.loading = false;
+            state.error = null;
+        },
         fetchListedProductsSuccess: (state, action: PayloadAction<Product[]>) => {
             state.products = action.payload;
             state.loading = false;
@@ -38,7 +46,7 @@ export const listedProductSlice = createSlice({
 });
 
 // Export the slice actions
-export const { fetchListedProductsStart, fetchListedProductsSuccess, fetchListedProductsFailure } = listedProductSlice.actions;
+export const { fetchListedProductsStart, reFetchListedProductsStart,deleteProduct, fetchListedProductsSuccess, fetchListedProductsFailure } = listedProductSlice.actions;
 
 // Export the slice reducer
 export default listedProductSlice.reducer;

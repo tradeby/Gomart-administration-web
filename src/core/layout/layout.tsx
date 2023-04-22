@@ -29,6 +29,7 @@ import {useNavigate} from "react-router-dom";
 import {CustomLogo} from "./confluence-logo/logo";
 import {CustomIcon} from "./confluence-logo/icon";
 import {DefaultProfile} from "./Profile/profile";
+import GlobalFlag from '../../shared/flag/flag';
 
 export default function ProductLayout() {
     return (
@@ -53,7 +54,7 @@ export default function ProductLayout() {
                     <CustomSideNav/>
                 </LeftSidebar>
                 <FlagsProvider>
-                 {/*   <GlobalFlag></GlobalFlag>*/}
+                    <GlobalFlag></GlobalFlag>
                     <Main id="main-content" skipLinkTitle="Main Content">
                         <SlotWrapper minHeight="93.5vh">
                             <AppRoutes/>

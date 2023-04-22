@@ -1,20 +1,21 @@
 // productSlice.ts
 
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Product} from "../../../../../../shared/models";
 import {ErrorResult} from "../../../../../debug/debug.slice";
-
 
 
 interface ProductState {
     product: Product | null;
     saving: boolean;
+    savedSuccessfully: boolean;
     error: ErrorResult | null;
 }
 
 const initialState: ProductState = {
     product: null,
     saving: false,
+    savedSuccessfully: false,
     error: null,
 };
 
@@ -35,13 +36,14 @@ export const productSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },*/
-        saveProductStart: (state, action:PayloadAction<{product:Product}>) => {
+        saveProductStart: (state, action: PayloadAction<{ product: Product, images: File[] }>) => {
             state.saving = true;
             state.error = null;
         },
         saveProductSuccess: (state, action: PayloadAction<Product>) => {
             state.product = action.payload;
             state.saving = false;
+            state.savedSuccessfully = true;
             state.error = null;
         },
         saveProductFailure: (state, action: PayloadAction<ErrorResult>) => {
@@ -52,9 +54,9 @@ export const productSlice = createSlice({
 });
 
 export const {
-   /* getProductStart,
-    getProductSuccess,
-    getProductFailure,*/
+    /* getProductStart,
+     getProductSuccess,
+     getProductFailure,*/
     saveProductStart,
     saveProductSuccess,
     saveProductFailure,
