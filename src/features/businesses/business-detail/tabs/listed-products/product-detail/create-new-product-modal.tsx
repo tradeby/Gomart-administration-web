@@ -1,50 +1,32 @@
 import React, {ChangeEvent, Fragment, useCallback, useRef, useState} from 'react';
 import ButtonGroup from '@atlaskit/button/button-group';
 import Button from '@atlaskit/button/standard-button';
-import noop from '@atlaskit/ds-lib/noop';
 import Modal, {
     ModalBody,
-    ModalFooter,
     ModalHeader,
     ModalTitle,
     ModalTransition,
 } from '@atlaskit/modal-dialog';
 import Form, {Field, Label} from "@atlaskit/form";
 import InlineEditDefault from "../../../../../../shared/inline-textfield";
-import {MapSection} from "../../business-information/google-map-section";
-import SettingsIcon from "@atlaskit/icon/glyph/settings";
 import Toggle from "@atlaskit/toggle";
-import DebugIcon from "@atlaskit/icon/glyph/lightbulb";
 import {IconButton} from "@atlaskit/atlassian-navigation";
-import Avatar from "@atlaskit/avatar";
 import Textfield from '@atlaskit/textfield';
 import PriceBeforeNaira from '../../../../../../assets/price-naira-before-icon.svg';
 import Icon from "@atlaskit/icon";
-import {CustomAddIcon, CustomRemoveIcon} from "./add-remove-icons";
-import Lozenge from "@atlaskit/lozenge";
+import {CustomAddIcon} from "./add-remove-icons";
 import {Radio} from "@atlaskit/radio";
 import SelectClearIcon from '@atlaskit/icon/glyph/select-clear';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 import {debounce} from "lodash";
-import {searchUser} from "../../../../../users/users-list.slice";
-import ProgressBar from '@atlaskit/progress-bar';
 import {PromoteType, PromoteTypeList, PromotionPeriod} from "./promote-type";
 import {formatToNairaCurrency} from "../../../../../../shared/currency-formatter/format-to-naira";
+import {generateDocumentId} from "../../../../../../shared/firebase/generate-document-id";
+import {Product} from "../../../../../../shared/models";
+import {useAppDispatch, useAppSelector} from "../../../../../../app/hooks";
+import {saveProductStart} from "./product.slice";
+import {FullScreenLoader} from "../../../../../../shared/loader/full-screen-loader";
 
-interface Product {
-    id: string;
-    businessId: string;
-    productName: string;
-    productDescription: string;
-    isNew: boolean;
-    price: number;
-    callForPrice: boolean;
-    isPublished: boolean;
-    productImageUrls: string[];
-    specifications: ProductSpecifications[];
-    createdOn: string;
-    updatedOn: string;
-}
 
 interface ProductSpecifications {
     id: string;
@@ -68,16 +50,21 @@ const initialProductState: Product = {
 };
 
 export default function CreateProductDialog() {
+    const dispatch = useAppDispatch();
     const [product, setProduct] = useState<Product>(initialProductState);
+    const [selectedPromoteAd, setSelectedPromoteAd] = useState<PromoteType>(PromoteTypeList[0])
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+
     const [specification, setSpecification] = useState<ProductSpecifications>({
         id: '999',
         title: '',
         value: '',
     });
-    const [selectedPromoteAd, setSelectedPromoteAd] = useState<PromoteType>(PromoteTypeList[0])
-    const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [previewImageIndex, setPreviewImageIndex] = useState<number>(0);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const {business} = useAppSelector((state) => state.businessDetailSlice);
+    const {saving, error} = useAppSelector((state) => state.productDetailSlice);
 
     const [isOpen, setIsOpen] = useState(false);
     const [width, setWidth] = useState('medium');
@@ -111,7 +98,7 @@ export default function CreateProductDialog() {
 
         // Update state with filtered image files
         setImageFiles(imageFiles.concat(...imgFiles));
-        setPreviewImageIndex(imageFiles.concat(...imgFiles).length-1);
+        setPreviewImageIndex(imageFiles.concat(...imgFiles).length - 1);
         console.log('something was dropped here', files);
         //  dispatch(addImage(files[0])); // You can customize this to handle multiple images if needed
         setIsDragging(false); // Set isDragging state to false when drag ends
@@ -244,6 +231,25 @@ export default function CreateProductDialog() {
 
     }
 
+    const buildAndSaveProduct = () => {
+        const newDocumentId = generateDocumentId();
+        const prodToSave: Product = {
+            id: newDocumentId,
+            businessId: business?.id as string,
+            productName: product.productName,
+            productDescription: product.productDescription,
+            isNew: product.isNew,
+            price: product.price,
+            callForPrice: product.callForPrice,
+            isPublished: product.isPublished,
+            productImageUrls: ["https://firebasestorage.googleapis.com/v0/b/gomart-apps.appspot.com/o/other-files%2FOIP%20(4).jpg?alt=media&token=15f9ea14-6148-4ee7-8f3a-d6b89b1e8df1"],//for images we will have to upload them first
+            specifications: product.specifications,
+            createdOn: "serverTimestamp() as Timestamp",
+            updatedOn: "serverTimestamp() as Timestamp",
+        };
+        dispatch(saveProductStart({product: prodToSave}))
+    }
+
     return (
         <>
 
@@ -261,17 +267,18 @@ export default function CreateProductDialog() {
                                 <Toggle id="toggle-default" onChange={handleIsPublished}
                                         isChecked={product.isPublished} name={'isPublished'}/>
                                 <span className='pr-4'></span>
-                                <Button appearance="primary" onClick={closeModal} autoFocus>
+                                <Button appearance="primary" onClick={buildAndSaveProduct} autoFocus>
                                     Save Changes
                                 </Button>
                                 <span className='pr-4'></span>
-                                <Button appearance="subtle">Cancel</Button>
+                                <Button onClick={closeModal} appearance="subtle">Cancel</Button>
 
                             </div>
                         </ModalHeader>
                         <ModalBody>
 
 
+                            {saving && <FullScreenLoader/>}
                             <Form<Product>
                                 onSubmit={(data) => console.log('product')}>
                                 {({formProps, submitting, dirty, reset}) => (
@@ -297,7 +304,7 @@ export default function CreateProductDialog() {
                                                      className={isDragging ? "border border-dashed border-black w-full text-center h-56 bg-slate-100 rounded-md " : "w-full text-center h-56 bg-slate-100 rounded-md"}>
 
                                                     {isDragging && <p className='py-20 my-4'>Drop Here!!</p>}
-                                                    {!isDragging && imageFiles.length > 0 &&imageFiles[previewImageIndex] && (
+                                                    {!isDragging && imageFiles.length > 0 && imageFiles[previewImageIndex] && (
                                                         <div className=' h-56'>
                                                             <img
                                                                 src={URL.createObjectURL(imageFiles[previewImageIndex])}
@@ -495,6 +502,7 @@ export default function CreateProductDialog() {
                                     </form>
                                 )}
                             </Form>
+
 
                         </ModalBody>
                     </Modal>

@@ -12,6 +12,7 @@ import {useAppDispatch, useAppSelector} from "../../../app/hooks";
 import {useNavigate, useParams} from "react-router-dom";
 import {loadUserStart} from "../../users/user-detail/user-detail.slice";
 import {loadBusinessStart} from "./business-detail.slice";
+import {FullScreenLoader} from "../../../shared/loader/full-screen-loader";
 
 const breadcrumbs =(props:{navigate:any, businessName:string})=>(
     <Breadcrumbs onExpand={__noop}>
@@ -45,6 +46,7 @@ export function BusinessDetail() {
     }
 
     return <div className="container mx-auto px-10">
+
         <PageHeader
             breadcrumbs={breadcrumbs({navigate:navigate, businessName: business?.companyName as string})}
             actions={actionsContent}

@@ -44,9 +44,15 @@ export interface Product {
     callForPrice:boolean;
     productImageUrls: string[];
     specifications: ProductSpecifications[],
+
+    isNew: boolean;
+    isPublished: boolean;
+
     createdOn: string;
     updatedOn: string;
 }
+
+
 interface ProductSpecifications{
     id:string,
     title:string,
