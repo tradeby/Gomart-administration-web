@@ -111,7 +111,7 @@ function BusinessCard(prop: { business: Business }) {
                 className=" hover:shadow-md px-0 mr-4 cursor-pointer px-1 mb-8">
         <div className="bg-white  shadow">
             <img src={prop.business?.logoUrl ? prop.business?.logoUrl : placeHolderPhoto} alt="Restaurant Image"
-                 className=" rounded-full " style={{width:'12rem', height: '12rem'}}/>
+                 className=" rounded-full object-cover" style={{width:'14rem', height: '14rem'}}/>
             <div className="p-4">
                 <h3 className=" font-semibold mb-2">{prop.business.companyName}</h3>
                 <Lozenge>{prop.business.businessCategory}</Lozenge>
@@ -122,10 +122,10 @@ function BusinessCard(prop: { business: Business }) {
 
 function BusinessCardLoading() {
     const navigate = useNavigate();
-    return <div className="w-52 hover:shadow-sm shadow-sm px-0 mr-4 cursor-pointer px-1 mb-8">
+    return <div className="hover:shadow-sm shadow-sm px-0 mr-4 cursor-pointer px-1 mb-8">
         <div className="bg-white  ">
-            <img src={placeHolderPhoto} alt="Restaurant Image"
-                 className="w-full rounded-full "/>
+            <div
+                 className=" rounded-full bg-slate-200" style={{width:'14rem', height: '14rem'}}/>
             <div className="p-4">
 
                 <div className="h-2 bg-slate-200 rounded"></div>
@@ -178,7 +178,7 @@ function PreSearchScreen(props: { businesses: Business[] }) {
             {props.businesses.map(((bu) => <BusinessCard key={bu.id} business={bu}/>))}
 
         </div>
-        <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}/>
+       {/* <Pagination pages={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}/>*/}
     </>
 }
 

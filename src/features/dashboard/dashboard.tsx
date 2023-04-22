@@ -5,10 +5,10 @@ import totalUsersIcon from '../../assets/dashboard/total-users.png'
 import totalAdRevenueIcon from '../../assets/dashboard/total-ad-revenue.png'
 import totalBusinessIcon from '../../assets/dashboard/total-businesses.png'
 import totalAppFeedbackIcon from '../../assets/dashboard/total-app-feedback.png'
-import { Chart } from "react-google-charts";
 import {useNavigate} from "react-router-dom";
-import {UsersVsBusinessesGraph} from "./dashboard-graph-mini";
-import {UsersRegistrationGraph} from "./dashboard-graph-large";
+import {GraphSection} from "./graphs/graph-section";
+import {CountTotalSection} from "./count-total/count-total-section";
+import CountUp from "react-countup";
 
 export function Dashboard() {
 
@@ -20,7 +20,7 @@ export function Dashboard() {
         const setLoading = () => {
             setTimeout(() => {
                 setIsLoading(false);
-            }, 800);
+            }, 900);
         };
 
         setLoading(); // Call the function to start the timer
@@ -32,62 +32,10 @@ export function Dashboard() {
         <div className='pt-10 container-md mx-auto w-11/12 xl:w-10/12 2xl:w-9/12'>
             <p className='text-white text-xl py-5 '>Hello Suleiman Musa{/*{user?.firstName} {user?.lastName}*/}!</p>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pb-4'>
-                {
-                       isLoading? <DashboardCardSmLoader/>: <DashboardCardSm
-                               logo={totalUsersIcon}
-                               description='Total app user registrations'
-                               title='Total Users'
-                               count='600'/>
+            <CountTotalSection/>
 
-                }
-                {
-                    isLoading? <DashboardCardSmLoader/>: <DashboardCardSm
-                        logo={totalBusinessIcon}
-                        description='Total Business registration in gomart'
-                        title='Total Businesses'
-                        count='400'/>
+            <GraphSection/>
 
-                }
-                {
-                    isLoading? <DashboardCardSmLoader/>: <DashboardCardSm
-                        logo={totalAdRevenueIcon}
-                        description='Total amount of internal Ads revenue'
-                        title='Total Ad Revenue'
-                        count='₦ 640,349'/>
-
-                }
-                {
-                    isLoading? <DashboardCardSmLoader/>: <DashboardCardSm
-                        logo={totalAppFeedbackIcon}
-                        description='Total app feedback submissions'
-                        title='Total App Feedback'
-                        count='102'/>
-
-                }
-            </div>
-
-            <div className='grid grid-cols-2 lg:grid-cols-3 gap-4 pb-4'>
-                {
-
-                       isLoading? <DashboardGraphLoader/>:
-                           <UsersRegistrationGraph/>
-
-
-
-                }
-
-                {
-
-                 isLoading?
-                       <DashboardRecentListLoader/>:
-                     <UsersVsBusinessesGraph/>
-
-
-
-                }
-
-            </div>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 '>
                 {
                     isLoading? <DashboardCardSmLoader/>:
@@ -168,13 +116,27 @@ export function DashboardRecentListLoader() {
     </div>;
 }
 
-export function DashboardCardSm(prop: { title: string, description: string, logo: string, count: string }) {
+export function DashboardCardSm(prop: { title: string, description: string, logo: string, startCount:number, count: number, isCurrency:boolean }) {
     return <div className="bg-white rounded-md w-full shadow   pt-3 pb-2 px-5 hover:shadow-md">
         <div className=" flex space-x-4">
             <div className="flex-1 space-y-2 py-0 px-0">
                 <div className=" text-sm accent-neutral-600 font-medium">{prop.title}</div>
                 <div className="grid grid-cols-4">
-                    <div className=" col-span-4 font-semibold accent-neutral-600 text-2xl">{prop.count}</div>
+                    <CountUp
+                        start={prop.startCount}
+                        end={prop.count}
+                        delay={2}
+                        duration={2.75}
+                        /*separator=" "
+                        onEnd={() => console.log('Ended! 👏')}
+                        onStart={() => console.log('Started! 💨')}*/
+                    >
+                        {({ countUpRef, start }) => (
+                                <span ref={countUpRef}  onClick={start} className=" col-span-4 font-semibold accent-neutral-600 text-2xl"></span>
+
+                        )}
+                    </CountUp>
+
                 </div>
 
             </div>
