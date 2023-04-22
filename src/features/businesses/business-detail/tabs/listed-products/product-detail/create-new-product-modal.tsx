@@ -26,8 +26,27 @@ import {Product} from "../../../../../../shared/models";
 import {useAppDispatch, useAppSelector} from "../../../../../../app/hooks";
 import {saveProductStart} from "./product.slice";
 import {FullScreenLoader} from "../../../../../../shared/loader/full-screen-loader";
-import {fetchListedProductsStart} from "../listed-products.slice";
+import {deleteProduct, fetchListedProductsStart} from "../listed-products.slice";
+import {ListedProductCard} from "../listed-products-tab";
+import Lozenge from "@atlaskit/lozenge";
 
+interface ProductImageFile {
+    url: string,
+    file: File | null,
+}
+
+function toProductImageFile(prop: { url?: string, file?: File }): ProductImageFile {
+    if (prop.url) {
+        return {url: prop.url, file: null};
+    }
+    if (prop.file) {
+        return {
+            url: URL.createObjectURL(prop.file),
+            file: prop.file
+        };
+    }
+    throw "Either Url or File required";
+}
 
 interface ProductSpecifications {
     id: string;
@@ -38,7 +57,7 @@ interface ProductSpecifications {
 const initialProductState: Product = {
     id: "",
     businessId: "",
-    productName: "",
+    productName: "New product or service",
     productDescription: "",
     isNew: true,
     price: 0,
@@ -50,11 +69,13 @@ const initialProductState: Product = {
     updatedOn: "",
 };
 
-export default function CreateProductDialog() {
+
+export default function CreateProductDialog(props: { editProduct?: Product }) {
     const dispatch = useAppDispatch();
-    const [product, setProduct] = useState<Product>(initialProductState);
+    const [product, setProduct] = useState<Product>(props.editProduct ? {...initialProductState, ...props.editProduct} : initialProductState);
+
     const [selectedPromoteAd, setSelectedPromoteAd] = useState<PromoteType>(PromoteTypeList[0])
-    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [imageFiles, setImageFiles] = useState<ProductImageFile[]>([...product.productImageUrls.map(c => toProductImageFile({url: c}))]);
 
     const [specification, setSpecification] = useState<ProductSpecifications>({
         id: '999',
@@ -81,7 +102,10 @@ export default function CreateProductDialog() {
     );
 
     useEffect(() => {
-        closeModal();
+        if (!props?.editProduct) {
+            closeModal();
+        }
+
     }, [savedSuccessfully])
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -102,8 +126,8 @@ export default function CreateProductDialog() {
         });
 
         // Update state with filtered image files
-        setImageFiles(imageFiles.concat(...imgFiles));
-        setPreviewImageIndex(imageFiles.concat(...imgFiles).length - 1);
+        setImageFiles(imageFiles.concat(...imgFiles.map(c => toProductImageFile({file: c}))));
+        setPreviewImageIndex(imageFiles.concat(...imgFiles.map(c => toProductImageFile({file: c}))).length - 1);
         console.log('something was dropped here', files);
         //  dispatch(addImage(files[0])); // You can customize this to handle multiple images if needed
         setIsDragging(false); // Set isDragging state to false when drag ends
@@ -220,7 +244,7 @@ export default function CreateProductDialog() {
                 );
             });
             // Update state with filtered image files
-            setImageFiles(prevImageFiles => prevImageFiles.concat(...imgFiles));
+            setImageFiles(prevImageFiles => prevImageFiles.concat(...imgFiles.map(c => toProductImageFile({file: c}))));
             console.log('something was dropped here', files);
             // Do something with the selected file, e.g. upload or process it
         }
@@ -237,7 +261,7 @@ export default function CreateProductDialog() {
     }
 
     const buildAndSaveProduct = () => {
-        const newDocumentId = generateDocumentId();
+        const newDocumentId = props.editProduct ? props.editProduct.id : generateDocumentId();
         const prodToSave: Product = {
             id: newDocumentId,
             businessId: business?.id as string,
@@ -247,34 +271,65 @@ export default function CreateProductDialog() {
             price: product.price,
             callForPrice: product.callForPrice,
             isPublished: product.isPublished,
-            productImageUrls: ["https://firebasestorage.googleapis.com/v0/b/gomart-apps.appspot.com/o/other-files%2FOIP%20(4).jpg?alt=media&token=15f9ea14-6148-4ee7-8f3a-d6b89b1e8df1"],//for images we will have to upload them first
+            productImageUrls: [...imageFiles.filter(c => !c.file).map(d => d.url)],//for images we will have to upload them first
             specifications: product.specifications,
             createdOn: "",
             updatedOn: "",
         };
-        dispatch(saveProductStart({product: prodToSave, images: imageFiles}))
+        dispatch(saveProductStart({
+            product: prodToSave,
+            images: imageFiles.filter(d => d.file !== null).map(c => c.file as File)
+        }))
+    }
+
+    const handleDelete = () => {
+        const cont = confirm('Are you sure you want to delete product/Service?');
+        if (cont) {
+            dispatch(deleteProduct({
+                businessId: props.editProduct?.businessId as string,
+                productId: props.editProduct?.id as string
+            }))
+        }
     }
 
     return (
         <>
+            {props.editProduct ?
+                <ListedProductCard onClick={() => setWidthAndOpen('x-large')} product={props.editProduct}/> :
+                <ButtonGroup>
+                    <Button onClick={() => setWidthAndOpen('x-large')} appearance='primary'>Create new product</Button>
+                </ButtonGroup>
+            }
 
-            <ButtonGroup>
-                <Button onClick={() => setWidthAndOpen('x-large')} appearance='primary'>Create new product</Button>
-            </ButtonGroup>
 
             <ModalTransition>
                 {isOpen && (
                     <Modal onClose={closeModal} width={width}>
                         <ModalHeader>
-                            <ModalTitle>Create new product/service</ModalTitle>
+                            {props.editProduct ?
+                                <ModalTitle>Edit product - {product.productName} {!product.isPublished &&
+                                    <Lozenge>Not public</Lozenge>}</ModalTitle>
+                                : <ModalTitle>Create new product/service</ModalTitle>
+                            }
                             <div className='flex flex-row justify-center'>
                                 <p className='font-medium pt-1'>Is published</p>
                                 <Toggle id="toggle-default" onChange={handleIsPublished}
                                         isChecked={product.isPublished} name={'isPublished'}/>
                                 <span className='pr-4'></span>
-                                <Button appearance="primary" onClick={buildAndSaveProduct} autoFocus>
-                                    Save Changes
-                                </Button>
+                                {props.editProduct ?
+
+                                    <Button appearance="primary" onClick={buildAndSaveProduct} autoFocus>
+                                        Save Changes
+                                    </Button> :
+                                    <Button appearance="primary" onClick={buildAndSaveProduct} autoFocus>
+                                        Create new product
+                                    </Button>}
+                                <span className='pr-4'></span>
+                                {props.editProduct &&
+
+                                    <Button onClick={ handleDelete } appearance="danger" >
+                                        Delete
+                                    </Button>}
                                 <span className='pr-4'></span>
                                 <Button onClick={closeModal} appearance="subtle">Cancel</Button>
 
@@ -312,7 +367,7 @@ export default function CreateProductDialog() {
                                                     {!isDragging && imageFiles.length > 0 && imageFiles[previewImageIndex] && (
                                                         <div className=' h-56'>
                                                             <img
-                                                                src={URL.createObjectURL(imageFiles[previewImageIndex])}
+                                                                src={imageFiles[previewImageIndex].url}
                                                                 alt={`Preview ${previewImageIndex + 1}`}
                                                                 style={{
                                                                     width: '100%',
@@ -334,10 +389,17 @@ export default function CreateProductDialog() {
                                                         <ImagePreviewItem removeImage={handleRemoveImage} index={index}
                                                                           previewImageIndex={previewImageIndex}
                                                                           previewImage={(i) => setPreviewImageIndex(i)}
-                                                                          file={file}/>
+                                                                          url={file.url}/>
                                                     )}
 
-                                                    {imageFiles.length <= 5 && Array(5 - imageFiles.length).fill(5).map(a =>
+                                                    {/*    {product.productImageUrls.map((file, index) =>
+                                                        <ImagePreviewItem removeImage={handleRemoveImage} index={index}
+                                                                          previewImageIndex={previewImageIndex}
+                                                                          previewImage={(i) => setPreviewImageIndex(i)}
+                                                                          url={file}/>
+                                                    )}*/}
+
+                                                    {(imageFiles.length + product.productImageUrls.length) <= 5 && Array(5 - (imageFiles.length + product.productImageUrls.length)).fill(5).map(a =>
                                                         <div className="w-16 h-16 bg-slate-100 rounded-md mx-1"></div>
                                                     )}
                                                 </div>
@@ -568,7 +630,7 @@ function PostAdItem(prop: { postAdType: PromoteType, selectedAdType: PromoteType
 
 
 function ImagePreviewItem(props: {
-    file: File,
+    url: string,
     index: number,
     previewImageIndex: number,
     removeImage: (fileIndex: number) => void,
@@ -604,7 +666,7 @@ function ImagePreviewItem(props: {
             <div
                 className="flex-1"
                 style={{
-                    backgroundImage: `url(${URL.createObjectURL(props.file)})`,
+                    backgroundImage: `url(${props.url})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat'
@@ -612,6 +674,7 @@ function ImagePreviewItem(props: {
             >
                 {/* Add any content you want here */}
             </div>
+
             {/*<ProgressBar
                 ariaLabel="Loading issues"
                 appearance="success"

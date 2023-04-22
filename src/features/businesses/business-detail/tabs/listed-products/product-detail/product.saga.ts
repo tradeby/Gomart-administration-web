@@ -6,7 +6,7 @@ import {getDownloadURL, ref, uploadBytes} from "firebase/storage";
 import {ErrorResult} from "../../../../../debug/debug.slice";
 import {Product} from "../../../../../../shared/models";
 import {getStorage} from "@firebase/storage";
-import {fetchListedProductsStart} from "../listed-products.slice";
+import {fetchListedProductsStart, reFetchListedProductsStart} from "../listed-products.slice";
 import {onShowFlag} from "../../../../../../shared/flag/flag-slice";
 
 
@@ -38,12 +38,17 @@ function* handleSaveProduct(action: ReturnType<typeof saveProductStart>): any {
         const productRef = doc(collection(db, "BUSINESSES/" + product.businessId + "/PRODUCTS"), product.id);
         yield setDoc(productRef, {
             ...product,
-            productImageUrls: uploadURLs,
+            productImageUrls: product.productImageUrls.concat(uploadURLs),
             createdOn: serverTimestamp() as Timestamp,
             updatedOn: serverTimestamp() as Timestamp
         }, {merge: true});
         yield put(saveProductSuccess(product));
-        yield put(fetchListedProductsStart({businessId: product.businessId as string}));
+        yield put(reFetchListedProductsStart({businessId: product.businessId as string}));
+        yield put(onShowFlag({
+            title: "Product/Service post created successfully",
+            flagType: 'SUCCESS',
+            description: 'You have successfully created a new product with Id' + product.id
+        }))
         //yield reload the product. or products lists so that we can have the updated list.
     } catch (error) {
         const err0r = error as { message: string };

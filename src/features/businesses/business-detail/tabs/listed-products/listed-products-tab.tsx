@@ -9,6 +9,7 @@ import {fetchListedProductsStart} from "./listed-products.slice";
 import {Product} from "../../../../../shared/models";
 import Lozenge from "@atlaskit/lozenge";
 import CreateProductDialog from "./product-detail/create-new-product-modal";
+import placeHolderPhoto from "../../../../../assets/place-holder-photo.svg";
 
 
 export function ListedProductsTab() {
@@ -36,20 +37,21 @@ export function ListedProductsTab() {
         </PageHeader>
         <div className="flex py-4 my-0 flex-wrap mx-0 px-0">
 
-            {products.map(c => <ListedProductCard product={c} key={c.id}/>)}
+            {products.map(c => <CreateProductDialog editProduct={c} key={c.id}/>)}
 
         </div>
     </div>
 }
 
-export function ListedProductCard(props: { product: Product }) {
-    return <div className="w-full md:w-1/2 lg:w-1/4 px-1 mb-8">
-        <div className="bg-white  shadow">
-            <img src={props.product?.productImageUrls[0]} alt="Restaurant Image"
+export function ListedProductCard(props: { product: Product, onClick:()=>void}) {
+    return <div className="w-60 px-1 mb-8" onClick={props.onClick}>
+        <div className="bg-gray-100  shadow">
+            <img src={props.product?.productImageUrls[0]?props.product?.productImageUrls[0]:placeHolderPhoto} alt="Restaurant Image"
                  className="w-full h-64 object-cover "/>
             <div className="p-4">
                 <h3 className=" font-semibold mb-2">{props.product?.productName}</h3>
-                <Lozenge>New</Lozenge>
+                {props.product.isPublished?<Lozenge appearance={'success'}>Public</Lozenge>:
+                <Lozenge >Not Visible</Lozenge>}
             </div>
         </div>
     </div>;
