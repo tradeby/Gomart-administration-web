@@ -1,50 +1,32 @@
 import React, {ChangeEvent, Fragment, useCallback, useRef, useState} from 'react';
 import ButtonGroup from '@atlaskit/button/button-group';
 import Button from '@atlaskit/button/standard-button';
-import noop from '@atlaskit/ds-lib/noop';
 import Modal, {
     ModalBody,
-    ModalFooter,
     ModalHeader,
     ModalTitle,
     ModalTransition,
 } from '@atlaskit/modal-dialog';
 import Form, {Field, Label} from "@atlaskit/form";
 import InlineEditDefault from "../../../../../../shared/inline-textfield";
-import {MapSection} from "../../business-information/google-map-section";
-import SettingsIcon from "@atlaskit/icon/glyph/settings";
 import Toggle from "@atlaskit/toggle";
-import DebugIcon from "@atlaskit/icon/glyph/lightbulb";
 import {IconButton} from "@atlaskit/atlassian-navigation";
-import Avatar from "@atlaskit/avatar";
 import Textfield from '@atlaskit/textfield';
 import PriceBeforeNaira from '../../../../../../assets/price-naira-before-icon.svg';
 import Icon from "@atlaskit/icon";
-import {CustomAddIcon, CustomRemoveIcon} from "./add-remove-icons";
-import Lozenge from "@atlaskit/lozenge";
+import {CustomAddIcon} from "./add-remove-icons";
 import {Radio} from "@atlaskit/radio";
 import SelectClearIcon from '@atlaskit/icon/glyph/select-clear';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 import {debounce} from "lodash";
-import {searchUser} from "../../../../../users/users-list.slice";
-import ProgressBar from '@atlaskit/progress-bar';
 import {PromoteType, PromoteTypeList, PromotionPeriod} from "./promote-type";
 import {formatToNairaCurrency} from "../../../../../../shared/currency-formatter/format-to-naira";
+import {generateDocumentId} from "../../../../../../shared/firebase/generate-document-id";
+import {Product} from "../../../../../../shared/models";
+import {useAppDispatch, useAppSelector} from "../../../../../../app/hooks";
+import {saveProductStart} from "./product.slice";
+import {FullScreenLoader} from "../../../../../../shared/loader/full-screen-loader";
 
-interface Product {
-    id: string;
-    businessId: string;
-    productName: string;
-    productDescription: string;
-    isNew: boolean;
-    price: number;
-    callForPrice: boolean;
-    isPublished: boolean;
-    productImageUrls: string[];
-    specifications: ProductSpecifications[];
-    createdOn: string;
-    updatedOn: string;
-}
 
 interface ProductSpecifications {
     id: string;
@@ -68,16 +50,21 @@ const initialProductState: Product = {
 };
 
 export default function CreateProductDialog() {
+    const dispatch = useAppDispatch();
     const [product, setProduct] = useState<Product>(initialProductState);
+    const [selectedPromoteAd, setSelectedPromoteAd] = useState<PromoteType>(PromoteTypeList[0])
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+
     const [specification, setSpecification] = useState<ProductSpecifications>({
         id: '999',
         title: '',
         value: '',
     });
-    const [selectedPromoteAd, setSelectedPromoteAd] = useState<PromoteType>(PromoteTypeList[0])
-    const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [previewImageIndex, setPreviewImageIndex] = useState<number>(0);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const {business} = useAppSelector((state) => state.businessDetailSlice);
+    const {saving, error} = useAppSelector((state) => state.productDetailSlice);
 
     const [isOpen, setIsOpen] = useState(false);
     const [width, setWidth] = useState('medium');
@@ -111,7 +98,7 @@ export default function CreateProductDialog() {
 
         // Update state with filtered image files
         setImageFiles(imageFiles.concat(...imgFiles));
-        setPreviewImageIndex(imageFiles.concat(...imgFiles).length-1);
+        setPreviewImageIndex(imageFiles.concat(...imgFiles).length - 1);
         console.log('something was dropped here', files);
         //  dispatch(addImage(files[0])); // You can customize this to handle multiple images if needed
         setIsDragging(false); // Set isDragging state to false when drag ends
@@ -244,6 +231,25 @@ export default function CreateProductDialog() {
 
     }
 
+    const buildAndSaveProduct = () => {
+        const newDocumentId = generateDocumentId();
+        const prodToSave: Product = {
+            id: newDocumentId,
+            businessId: business?.id as string,
+            productName: product.productName,
+            productDescription: product.productDescription,
+            isNew: product.isNew,
+            price: product.price,
+            callForPrice: product.callForPrice,
+            isPublished: product.isPublished,
+            productImageUrls: ["https://firebasestorage.googleapis.com/v0/b/gomart-apps.appspot.com/o/other-files%2FOIP%20(4).jpg?alt=media&token=15f9ea14-6148-4ee7-8f3a-d6b89b1e8df1"],//for images we will have to upload them first
+            specifications: product.specifications,
+            createdOn: "serverTimestamp() as Timestamp",
+            updatedOn: "serverTimestamp() as Timestamp",
+        };
+        dispatch(saveProductStart({product: prodToSave}))
+    }
+
     return (
         <>
 
@@ -261,192 +267,180 @@ export default function CreateProductDialog() {
                                 <Toggle id="toggle-default" onChange={handleIsPublished}
                                         isChecked={product.isPublished} name={'isPublished'}/>
                                 <span className='pr-4'></span>
-                                <Button appearance="primary" onClick={closeModal} autoFocus>
+                                <Button appearance="primary" onClick={buildAndSaveProduct} autoFocus>
                                     Save Changes
                                 </Button>
                                 <span className='pr-4'></span>
-                                <Button appearance="subtle">Cancel</Button>
+                                <Button onClick={closeModal} appearance="subtle">Cancel</Button>
 
                             </div>
                         </ModalHeader>
                         <ModalBody>
-                            <div className="fixed inset-0 z-50 flex items-center justify-center">
-                                <div className="absolute inset-0 bg-gray-900 opacity-25"  style={{zIndex:'900'}}></div>
-
-                                <div className="bg-white p-6 rounded-md " style={{zIndex:'1000'}}>
-                                    <div className="flex justify-center items-center mb-4">
-
-                                        <span
-                                            className="animate-spin mr-2 h-5 w-5 border-t-2 border-blue-500 border-solid rounded-full"></span>
-                                        <span className="text-gray-900 text-lg">Saving...</span>
-                                    </div>
-                                    <p className="text-gray-600">Please wait while saving your post...</p>
-                                </div>
-                            </div>
 
 
-                                <Form<Product>
-                                    onSubmit={(data) => console.log('product')}>
-                                    {({formProps, submitting, dirty, reset}) => (
-                                        <form {...formProps}>
-                                            <input
-                                                multiple
-                                                type="file"
-                                                ref={fileInputRef}
-                                                style={{display: 'none'}}
-                                                onChange={handleFileInputChange}
-                                            />
-                                            <div onDrop={handleDrop}
+                            {saving && <FullScreenLoader/>}
+                            <Form<Product>
+                                onSubmit={(data) => console.log('product')}>
+                                {({formProps, submitting, dirty, reset}) => (
+                                    <form {...formProps}>
+                                        <input
+                                            multiple
+                                            type="file"
+                                            ref={fileInputRef}
+                                            style={{display: 'none'}}
+                                            onChange={handleFileInputChange}
+                                        />
+                                        <div onDrop={handleDrop}
+                                             onDragEnter={handleDragStart}
+                                             onDragLeave={handleDragEnd}
+                                             onDragOver={handleDragOver}
+                                             className='grid grid-cols-12 justify-center pb-20 gap-x-4 w-full'>
+
+                                            <div className='col-span-6 ml-2 pt-4 '>
+                                                <div onDrop={handleDrop}
+                                                     onDragOver={handleDragOver}
+                                                     onDragEnter={handleDragStart}
+                                                     onDragLeave={handleDragEnd}
+                                                     className={isDragging ? "border border-dashed border-black w-full text-center h-56 bg-slate-100 rounded-md " : "w-full text-center h-56 bg-slate-100 rounded-md"}>
+
+                                                    {isDragging && <p className='py-20 my-4'>Drop Here!!</p>}
+                                                    {!isDragging && imageFiles.length > 0 && imageFiles[previewImageIndex] && (
+                                                        <div className=' h-56'>
+                                                            <img
+                                                                src={URL.createObjectURL(imageFiles[previewImageIndex])}
+                                                                alt={`Preview ${previewImageIndex + 1}`}
+                                                                style={{
+                                                                    width: '100%',
+                                                                    height: '100%',
+                                                                    objectFit: 'contain',
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    )}
+
+                                                </div>
+
+                                                <div className="flex flex-wrap space-y-3 mt-0 ">
+                                                    <div onClick={handleButtonClick}
+                                                         className="w-16 h-16 bg-slate-100 rounded-md mx-1 mt-3 py-5 hover:shadow-md cursor-pointer text-center">
+                                                        <Icon glyph={CustomAddIcon} label=""/>
+                                                    </div>
+                                                    {imageFiles.map((file, index) =>
+                                                        <ImagePreviewItem removeImage={handleRemoveImage} index={index}
+                                                                          previewImageIndex={previewImageIndex}
+                                                                          previewImage={(i) => setPreviewImageIndex(i)}
+                                                                          file={file}/>
+                                                    )}
+
+                                                    {imageFiles.length <= 5 && Array(5 - imageFiles.length).fill(5).map(a =>
+                                                        <div className="w-16 h-16 bg-slate-100 rounded-md mx-1"></div>
+                                                    )}
+                                                </div>
+
+                                                <div className='col-span-2 pt-4 py-0'>
+                                                    <Label htmlFor="toggle-default">Promote your product/Service</Label>
+                                                </div>
+
+                                                <div>
+
+                                                    {PromoteTypeList.map(p => <PostAdItem postAdType={p}
+                                                                                          selectedAdType={selectedPromoteAd}
+                                                                                          key={p.id}
+                                                                                          onChange={changeSelectedAd}
+                                                    />)}
+
+
+                                                </div>
+                                            </div>
+                                            <div className="col-span-5 "
+                                                 onDrop={handleDrop}
                                                  onDragEnter={handleDragStart}
                                                  onDragLeave={handleDragEnd}
                                                  onDragOver={handleDragOver}
-                                                 className='grid grid-cols-12 justify-center pb-20 gap-x-4 w-full'>
-
-                                                <div className='col-span-6 ml-2 pt-4 '>
-                                                    <div onDrop={handleDrop}
-                                                         onDragOver={handleDragOver}
-                                                         onDragEnter={handleDragStart}
-                                                         onDragLeave={handleDragEnd}
-                                                         className={isDragging ? "border border-dashed border-black w-full text-center h-56 bg-slate-100 rounded-md " : "w-full text-center h-56 bg-slate-100 rounded-md"}>
-
-                                                        {isDragging && <p className='py-20 my-4'>Drop Here!!</p>}
-                                                        {!isDragging && imageFiles.length > 0 &&imageFiles[previewImageIndex] && (
-                                                            <div className=' h-56'>
-                                                                <img
-                                                                    src={URL.createObjectURL(imageFiles[previewImageIndex])}
-                                                                    alt={`Preview ${previewImageIndex + 1}`}
-                                                                    style={{
-                                                                        width: '100%',
-                                                                        height: '100%',
-                                                                        objectFit: 'contain',
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                        )}
-
-                                                    </div>
-
-                                                    <div className="flex flex-wrap space-y-3 mt-0 ">
-                                                        <div onClick={handleButtonClick}
-                                                             className="w-16 h-16 bg-slate-100 rounded-md mx-1 mt-3 py-5 hover:shadow-md cursor-pointer text-center">
-                                                            <Icon glyph={CustomAddIcon} label=""/>
-                                                        </div>
-                                                        {imageFiles.map((file, index) =>
-                                                            <ImagePreviewItem removeImage={handleRemoveImage} index={index}
-                                                                              previewImageIndex={previewImageIndex}
-                                                                              previewImage={(i) => setPreviewImageIndex(i)}
-                                                                              file={file}/>
-                                                        )}
-
-                                                        {imageFiles.length <= 5 && Array(5 - imageFiles.length).fill(5).map(a =>
-                                                            <div className="w-16 h-16 bg-slate-100 rounded-md mx-1"></div>
-                                                        )}
-                                                    </div>
-
-                                                    <div className='col-span-2 pt-4 py-0'>
-                                                        <Label htmlFor="toggle-default">Promote your product/Service</Label>
-                                                    </div>
-
-                                                    <div>
-
-                                                        {PromoteTypeList.map(p => <PostAdItem postAdType={p}
-                                                                                              selectedAdType={selectedPromoteAd}
-                                                                                              key={p.id}
-                                                                                              onChange={changeSelectedAd}
-                                                        />)}
-
-
-                                                    </div>
+                                            >
+                                                <div className='col-span-2 py-0'><InlineEditDefault
+                                                    defaultValue={product.productName}
+                                                    name={'productName'}
+                                                    onChange={handleProductChange}
+                                                    isRequired label='Title'/>
                                                 </div>
-                                                <div className="col-span-5 "
-                                                     onDrop={handleDrop}
-                                                     onDragEnter={handleDragStart}
-                                                     onDragLeave={handleDragEnd}
-                                                     onDragOver={handleDragOver}
-                                                >
-                                                    <div className='col-span-2 py-0'><InlineEditDefault
-                                                        defaultValue={product.productName}
-                                                        name={'productName'}
-                                                        onChange={handleProductChange}
-                                                        isRequired label='Title'/>
+
+                                                <div className='col-span-2 pt-4 py-0'>
+                                                    <Label htmlFor="toggle-default">Call for price</Label>
+                                                    <Toggle id="toggle-default" onChange={handleCallForPrice}
+                                                            isChecked={product.callForPrice} name={'callForPrice'}/>
+                                                </div>
+
+                                                {!product.callForPrice && <div className='col-span-2 py-0'>
+                                                    <Field label="Price" defaultValue={product.price}
+
+                                                           name={'price'}>
+                                                        {({fieldProps}: any) => (
+                                                            <Fragment>
+                                                                <Textfield
+                                                                    {...fieldProps}
+                                                                    type='number'
+                                                                    onChange={handleProductChange}
+                                                                    elemBeforeInput={
+                                                                        <img src={PriceBeforeNaira} className='px-2'
+                                                                             alt={'item Naira'}/>
+                                                                    }
+                                                                />
+                                                            </Fragment>
+                                                        )}
+                                                    </Field>
+                                                </div>}
+
+                                                <div className='pt-4'>
+                                                    <Label htmlFor="toggle-default">Condition</Label>
+                                                </div>
+                                                <div className='grid grid-cols-7 gap-x-2 w-full'>
+                                                    <div className='col-span-2 py-0'>
+                                                        <Label htmlFor="toggle-default">New</Label>
+                                                        <Toggle id="toggle-default" onChange={handleIsNewToggle}
+                                                                isChecked={product.isNew} name={'isNew'}/>
+                                                    </div>
+                                                    <div className='col-span-2 py-0'>
+                                                        <Label htmlFor="toggle-default">Used</Label>
+                                                        <Toggle id="toggle-default" onChange={handleIsNewToggle}
+                                                                isChecked={!product.isNew} name={'isNew'}/>
                                                     </div>
 
-                                                    <div className='col-span-2 pt-4 py-0'>
-                                                        <Label htmlFor="toggle-default">Call for price</Label>
-                                                        <Toggle id="toggle-default" onChange={handleCallForPrice}
-                                                                isChecked={product.callForPrice} name={'callForPrice'}/>
-                                                    </div>
+                                                </div>
 
-                                                    {!product.callForPrice && <div className='col-span-2 py-0'>
-                                                        <Field label="Price" defaultValue={product.price}
 
-                                                               name={'price'}>
-                                                            {({fieldProps}: any) => (
-                                                                <Fragment>
-                                                                    <Textfield
-                                                                        {...fieldProps}
-                                                                        type='number'
-                                                                        onChange={handleProductChange}
-                                                                        elemBeforeInput={
-                                                                            <img src={PriceBeforeNaira} className='px-2'
-                                                                                 alt={'item Naira'}/>
-                                                                        }
-                                                                    />
-                                                                </Fragment>
-                                                            )}
-                                                        </Field>
-                                                    </div>}
-
-                                                    <div className='pt-4'>
-                                                        <Label htmlFor="toggle-default">Condition</Label>
-                                                    </div>
-                                                    <div className='grid grid-cols-7 gap-x-2 w-full'>
+                                                <div className='col-span-2 py-0'><InlineEditDefault
+                                                    defaultValue={product.productDescription}
+                                                    onChange={handleProductChange}
+                                                    name={'productDescription'}
+                                                    isRequired
+                                                    label='Description'/>
+                                                </div>
+                                                <div className='pt-4'>
+                                                    <Label htmlFor="toggle-default">Specification</Label>
+                                                </div>
+                                                {product.specifications.map(s =>
+                                                    <div key={s.id} className='grid grid-cols-7 pt-2 gap-x-2 w-full'>
                                                         <div className='col-span-2 py-0'>
-                                                            <Label htmlFor="toggle-default">New</Label>
-                                                            <Toggle id="toggle-default" onChange={handleIsNewToggle}
-                                                                    isChecked={product.isNew} name={'isNew'}/>
+                                                            <Textfield name="specTitle" isCompact value={s.title}
+                                                                       isDisabled
+                                                                       aria-label="default text field"/>
                                                         </div>
-                                                        <div className='col-span-2 py-0'>
-                                                            <Label htmlFor="toggle-default">Used</Label>
-                                                            <Toggle id="toggle-default" onChange={handleIsNewToggle}
-                                                                    isChecked={!product.isNew} name={'isNew'}/>
+                                                        <div className='col-span-4 py-0'>
+                                                            <Textfield name="specValue" isCompact value={s.value}
+                                                                       isDisabled
+                                                                       aria-label="default text field"/></div>
+                                                        <div className='col-span-1 pt-0 '>
+                                                            <IconButton
+                                                                onClick={handleRemoveSpec(s.id)}
+                                                                icon={<SelectClearIcon primaryColor='#6b778c'
+                                                                                       label=""/>}
+                                                                tooltip={'Remove specification'}/>
                                                         </div>
 
-                                                    </div>
+                                                    </div>)}
 
-
-                                                    <div className='col-span-2 py-0'><InlineEditDefault
-                                                        defaultValue={product.productDescription}
-                                                        onChange={handleProductChange}
-                                                        name={'productDescription'}
-                                                        isRequired
-                                                        label='Description'/>
-                                                    </div>
-                                                    <div className='pt-4'>
-                                                        <Label htmlFor="toggle-default">Specification</Label>
-                                                    </div>
-                                                    {product.specifications.map(s =>
-                                                        <div key={s.id} className='grid grid-cols-7 pt-2 gap-x-2 w-full'>
-                                                            <div className='col-span-2 py-0'>
-                                                                <Textfield name="specTitle" isCompact value={s.title}
-                                                                           isDisabled
-                                                                           aria-label="default text field"/>
-                                                            </div>
-                                                            <div className='col-span-4 py-0'>
-                                                                <Textfield name="specValue" isCompact value={s.value}
-                                                                           isDisabled
-                                                                           aria-label="default text field"/></div>
-                                                            <div className='col-span-1 pt-0 '>
-                                                                <IconButton
-                                                                    onClick={handleRemoveSpec(s.id)}
-                                                                    icon={<SelectClearIcon primaryColor='#6b778c'
-                                                                                           label=""/>}
-                                                                    tooltip={'Remove specification'}/>
-                                                            </div>
-
-                                                        </div>)}
-
-                                                    {/*
+                                                {/*
                                         <div className='grid grid-cols-7 pt-0 gap-x-2 w-full'>
                                             <div className='col-span-2 py-1'>
                                                 <Textfield name="basic" isCompact value={'Color'}
@@ -478,36 +472,36 @@ export default function CreateProductDialog() {
 
                                         </div>*/}
 
-                                                    <div className='pt-4'>
-                                                        <Label htmlFor="toggle-default">Add new spec</Label>
+                                                <div className='pt-4'>
+                                                    <Label htmlFor="toggle-default">Add new spec</Label>
+                                                </div>
+                                                <div className='grid grid-cols-7 gap-x-4 w-full'>
+                                                    <div className='col-span-2 py-0'><InlineEditDefault
+                                                        defaultValue={specification.title}
+                                                        onChange={handleChangeSpec}
+                                                        name={'title'} label='Title'/>
                                                     </div>
-                                                    <div className='grid grid-cols-7 gap-x-4 w-full'>
-                                                        <div className='col-span-2 py-0'><InlineEditDefault
-                                                            defaultValue={specification.title}
+                                                    <div className='col-span-4 py-0'>
+                                                        <InlineEditDefault
                                                             onChange={handleChangeSpec}
-                                                            name={'title'} label='Title'/>
-                                                        </div>
-                                                        <div className='col-span-4 py-0'>
-                                                            <InlineEditDefault
-                                                                onChange={handleChangeSpec}
-                                                                defaultValue={specification.value}
-                                                                name={'value'} label='Value'/></div>
-                                                        <div className='col-span-1 pt-8 '>
-                                                            <IconButton
-                                                                onClick={addNewSpec}
-                                                                icon={<AddCircleIcon primaryColor='#007C98' label=""/>}
-                                                                tooltip={'Add new specification'}/>
-                                                        </div>
-
+                                                            defaultValue={specification.value}
+                                                            name={'value'} label='Value'/></div>
+                                                    <div className='col-span-1 pt-8 '>
+                                                        <IconButton
+                                                            onClick={addNewSpec}
+                                                            icon={<AddCircleIcon primaryColor='#007C98' label=""/>}
+                                                            tooltip={'Add new specification'}/>
                                                     </div>
-
 
                                                 </div>
 
+
                                             </div>
-                                        </form>
-                                    )}
-                                </Form>
+
+                                        </div>
+                                    </form>
+                                )}
+                            </Form>
 
 
                         </ModalBody>
