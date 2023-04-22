@@ -127,6 +127,8 @@ export function DashboardCardSm(prop: { title: string, description: string, logo
                         end={prop.count}
                         delay={2}
                         duration={2.75}
+                        prefix={prop.isCurrency?'₦':''}
+                        decimals={prop.isCurrency?2:0}
                         /*separator=" "
                         onEnd={() => console.log('Ended! 👏')}
                         onStart={() => console.log('Started! 💨')}*/
