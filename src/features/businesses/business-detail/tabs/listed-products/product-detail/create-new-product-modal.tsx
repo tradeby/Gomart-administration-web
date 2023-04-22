@@ -163,17 +163,61 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
         console.log(product);
     }
 
+    const checkIsPublishedConditionSilent = () => {
+        if (product.productName.length < 1) {
+            // alert('Title required: Can not make the product/service public without entering title.');
+            setProduct((prevProduct) => ({
+                ...prevProduct,
+                isPublished: false,
+            }));
+            // return;
+        }
+
+        if ((imageFiles.length) > 0) {
+            //alert('You need to Upload atleast one image for this product');
+            setProduct((prevProduct) => ({
+                ...prevProduct,
+                isPublished: false,
+            }));
+            // return;
+        }
+    }
+    const checkIsPublishedCondition = (): boolean => {
+        if (product.productName.length < 1) {
+            alert('Title required: Can not make the product/service public without entering title.');
+            setProduct((prevProduct) => ({
+                ...prevProduct,
+                isPublished: false,
+            }));
+            return false;
+        }
+
+        if (( imageFiles.length) < 1) {
+            alert('You need to Upload atleast one image for this product');
+            setProduct((prevProduct) => ({
+                ...prevProduct,
+                isPublished: false,
+            }));
+            return false;
+        }
+        return true;
+
+    }
     const handleIsPublished = () => {
 
-        setProduct((prevProduct) => ({
-            ...prevProduct,
-            isPublished: !prevProduct.isPublished,
-        }));
-        console.log(product);
+        const cont = checkIsPublishedCondition();
+        if(cont){
+            setProduct((prevProduct) => ({
+                ...prevProduct,
+                isPublished: !prevProduct.isPublished,
+            }));
+            console.log(product);
+        }
+
     }
     const handleProductChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
-
+        checkIsPublishedConditionSilent();
         setProduct((prevProduct) => ({
             ...prevProduct,
             [name]: value,
@@ -246,6 +290,7 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
             // Update state with filtered image files
             setImageFiles(prevImageFiles => prevImageFiles.concat(...imgFiles.map(c => toProductImageFile({file: c}))));
             console.log('something was dropped here', files);
+            checkIsPublishedConditionSilent();
             // Do something with the selected file, e.g. upload or process it
         }
     };
@@ -257,6 +302,8 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
     };
     const handleRemoveImage = (index: number) => {
         setImageFiles(prevImageFiles => prevImageFiles.filter((_, i) => i !== index));
+
+        checkIsPublishedConditionSilent();
 
     }
 
@@ -312,8 +359,8 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
                                 : <ModalTitle>Create new product/service</ModalTitle>
                             }
                             <div className='flex flex-row justify-center'>
-                                <p className='font-medium pt-1'>Is published</p>
-                                <Toggle id="toggle-default" onChange={handleIsPublished}
+                                <p className='font-medium pt-1'>Visible</p>
+                                <Toggle id="toggle-defaultyu" onChange={handleIsPublished}
                                         isChecked={product.isPublished} name={'isPublished'}/>
                                 <span className='pr-4'></span>
                                 {props.editProduct ?
@@ -327,7 +374,7 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
                                 <span className='pr-4'></span>
                                 {props.editProduct &&
 
-                                    <Button onClick={ handleDelete } appearance="danger" >
+                                    <Button onClick={handleDelete} appearance="danger">
                                         Delete
                                     </Button>}
                                 <span className='pr-4'></span>

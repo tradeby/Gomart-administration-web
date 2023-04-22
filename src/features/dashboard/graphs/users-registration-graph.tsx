@@ -4,6 +4,13 @@ import Button from "@atlaskit/button/standard-button";
 import Lozenge from "@atlaskit/lozenge";
 import './card-flip.css';
 
+interface RevenueData {
+    Year: string;
+    Sales: number;
+}
+
+interface DataRevenueMonth extends Array<RevenueData> {}
+
 export function UsersRegistrationGraph() {
     const [isFlipped, setIsFlipped] = useState(false); // State to track the flip status
 
@@ -47,7 +54,7 @@ export function UsersRegistrationGraph() {
         }
     };
 
-    const dataRevenueMonth = [
+    const dataRevenueMonth:Array<string|number> [] = [
         ['Year', 'Sales',],
         ['Jan', 15000,],
         ['Feb', 12500,],
@@ -59,7 +66,7 @@ export function UsersRegistrationGraph() {
 
     ];
 
-    const dataRevenueWeek = [
+    const dataRevenueWeek:Array<string|number> [] = [
         ['Week', 'Sales',],
         ['Sun', 1200,],
         ['Mon', 500,],
@@ -68,8 +75,8 @@ export function UsersRegistrationGraph() {
         ['Thus', 6000,],
 
     ];
-    const dataUsersMonth = [
-        ['Year', 'users',],
+    const dataUsersMonth:Array<string|number> [] = [
+        ['Week', 'users',],
         ['Jan', 21,],
         ['Feb', 50,],
         ['Mar', 8,],
@@ -79,8 +86,8 @@ export function UsersRegistrationGraph() {
         ['Jul', 2,],
 
     ];
-    const dataUsersWeek = [
-        ['Year', 'users',],
+    const dataUsersWeek:Array<string|number> [] = [
+        ['Week', 'users',],
         ['Sun', 2,],
         ['Mon', 8,],
         ['Tue', 4,],

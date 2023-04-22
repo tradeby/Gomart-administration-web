@@ -48,45 +48,67 @@ export function BusinessInformationPanel() {
                         onSubmit={(data) => submitForm(data)}>
                         {({formProps, submitting, dirty, reset}) => (
                             <form {...formProps}>
-                                <p className="text-lg pt-2 font-semibold"> Business Information
+                                <p className="text-lg pt-2 pb-4 font-semibold"> Business Information
                                 </p>
-                                <div className='grid grid-cols-2 gap-x-8'>
-                                    <div className='col-span-1 py-0'><InlineEditDefault
-                                        isDisabled
-                                         defaultValue={business?.companyName}
-                                        name={'businessName'}
-                                        isRequired label='Business Name'/>
-                                    </div>
-                                    <div className='col-span-1 py-0'>
-                                        <InlineEditDefault
-                                            isDisabled
-                                               defaultValue={business?.phoneNumber}
-                                            name={'phoneNumber'}
-                                            isRequired label='Phone Number'/></div>
+                               <div className='grid grid-cols-5 '>
+                                   <div className='col-span-1'>
+
+                                           <img src={business?.logoUrl} alt="Business Logo"
+                                                style={{width:'8rem', height: '8rem'}}
+                                                className="rounded-full  object-cover"/>
+
+                                       <div className=' py-2 px-3'>
+                                           <Button>Upload Logo</Button>
+                                       </div>
+
+                                   </div>
+                                   <div  className='col-span-4'>
+
+                                       <div className='grid grid-cols-2 gap-x-8'>
+                                           <div className='col-span-1 py-0'><InlineEditDefault
+                                               isDisabled
+                                               defaultValue={business?.companyName}
+                                               name={'businessName'}
+                                               isRequired label='Business Name'/>
+                                           </div>
+                                           <div className='col-span-1 py-0'>
+                                               <InlineEditDefault
+                                                   isDisabled
+                                                   defaultValue={business?.phoneNumber}
+                                                   name={'phoneNumber'}
+                                                   isRequired label='Phone Number'/></div>
 
 
-                                </div>
+                                       </div>
 
-                                <p className="text-lg pt-2 font-semibold"> Opening & Closing times
-                                </p>
-                                <div className='grid grid-cols-2 gap-x-8'>
-                                    <div className='col-span-1 py-0'><InlineEditDefault
-                                        isDisabled
-                                         defaultValue={business?.openingTime}
-                                        name={'openingTime'}
-                                        isRequired label='Opening Time'/>
-                                    </div>
-                                    <div className='col-span-1 py-0'>
-                                        <InlineEditDefault
-                                            isDisabled
-                                            defaultValue={business?.closingTime}
-                                            name={'closingTime'}
-                                            isRequired label='Closing Time'/></div>
+                                       {/*<p className="text-lg pt-2 font-semibold"> Opening & Closing times
+                                </p>*/}
+                                       <div className='grid grid-cols-4 gap-x-8'>
+                                           <div className='col-span-1 py-0'><InlineEditDefault
+                                               isDisabled
+                                               defaultValue={business?.openingTime}
+                                               name={'openingTime'}
+                                               isRequired label='Opening Time'/>
+                                           </div>
+                                           <div className='col-span-1 py-0'>
+                                               <InlineEditDefault
+                                                   isDisabled
+                                                   defaultValue={business?.closingTime}
+                                                   name={'closingTime'}
+                                                   isRequired label='Closing Time'/></div>
+                                           <div className='col-span-2 py-0'>
+                                               <InlineEditDefault
+                                                   isDisabled
+                                                   //defaultValue={business?.closingTime}
+                                                   name={'DaysOpen'}
+                                                   isRequired label='Days open'/></div>
 
 
-                                </div>
+                                       </div>
+                                   </div>
+                               </div>
 
-                                <p className="text-lg pt-2 font-semibold"> Location & Map
+                                <p className="text-lg pt-6 font-semibold"> Location & Map
                                 </p>
                                 <div className='grid grid-cols-2 gap-x-8'>
                                     <div className='col-span-2 py-2'>

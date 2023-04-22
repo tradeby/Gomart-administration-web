@@ -8,6 +8,7 @@ import {RecentlyViewedTab} from "./tabs/recently-viewed-tab";
 import {useNavigate} from "react-router-dom";
 import Lozenge from "@atlaskit/lozenge";
 import {useAppSelector} from "../../../app/hooks";
+import {NoBusinessCreatedEmptyState} from "./tabs/no-business-created";
 
 
 export default function TabsDefaultExample() {
@@ -41,7 +42,7 @@ export default function TabsDefaultExample() {
             <TabPanel> <SavedProductsTab/> </TabPanel>
             <TabPanel> <RecentlyViewedTab/> </TabPanel>
             <TabPanel> <FollowedBusinessesTab/></TabPanel>
-            <TabPanel> <p>No business exists for user</p></TabPanel>
+            <TabPanel> <NoBusinessCreatedEmptyState/></TabPanel>
 
 
         </Tabs>
