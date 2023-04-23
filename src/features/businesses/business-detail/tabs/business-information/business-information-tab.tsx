@@ -112,7 +112,7 @@ export function BusinessInformationPanel() {
                                 </p>
                                 <div className='grid grid-cols-2 gap-x-8'>
                                     <div className='col-span-2 py-2'>
-                                        <MapSection lat={business?.map.latitude as number} lng={business?.map.longitude as number} zoom={14} height={'200px'}/>
+                                        <MapSection lat={business?.map.latitude as number??0} lng={business?.map.longitude as number??0} zoom={14} height={'200px'}/>
                                     </div>
 
 
@@ -224,7 +224,7 @@ export function BusinessInformationPanel() {
 
                         <div className='grid grid-cols-2 gap-x-8'>
                             <div className='col-span-2 py-2'>
-                                <MapSection lat={business?.map.latitude as number} lng={business?.map.longitude as number} zoom={13} height={'100px'}/>
+                                <MapSection lat={business?.map.latitude as number??0} lng={business?.map.longitude as number??0} zoom={13} height={'100px'}/>
                             </div>
                         </div>
                         <p className="text-lg pt-2 font-semibold"> View our gallery
