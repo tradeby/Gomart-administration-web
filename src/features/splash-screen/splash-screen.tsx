@@ -17,7 +17,7 @@ export function SplashScreen() {
         if (AuthToken === null) {
             setTimeout(() => dispatch(authenticationLoggedOut()), 2000);
         } else {
-            const tokenExpiration = new Date(AuthToken.expiration as string);
+            const tokenExpiration = new Date(AuthToken.loginExpires as string);
             const timeNow = new Date();
             if (timeNow > tokenExpiration) {
                 setUserToken(null);

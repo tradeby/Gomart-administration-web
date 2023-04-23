@@ -44,7 +44,13 @@ export function Login() {
 
                 if (user && user.uid && user.uid.length > 0) {
                     console.log('I am here, where I am supposed to be');
-                    setUserToken({...user})
+                    const currentTime = new Date();
+                    const futureTime = new Date(currentTime);
+                    futureTime.setHours(currentTime.getHours() + 4);
+
+                    const futureTimeString = futureTime.toLocaleString(); // Use toLocaleString() to format the date as a string
+
+                    setUserToken({...user,loginExpires:futureTimeString})
                     dispatch(authenticationLoggedIn({authData: user as AppUser}))
                     /* navigate('/');*/
                 }
