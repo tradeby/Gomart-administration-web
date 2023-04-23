@@ -23,6 +23,9 @@ export const businessSlice = createSlice({
         loadBusinessStart: (state, action:PayloadAction<{businessId:string}>) => {
             state.loading = true;
             state.error = null;
+        }, reLoadBusinessStart: (state, action:PayloadAction<{businessId:string}>) => {
+            state.loading = false;
+            state.error = null;
         },
         loadBusinessSuccess: (state, action: PayloadAction<Business>) => {
             state.business = action.payload;
@@ -37,7 +40,7 @@ export const businessSlice = createSlice({
 });
 
 // Export the slice actions
-export const { loadBusinessStart, loadBusinessSuccess, loadBusinessFailure } = businessSlice.actions;
+export const { loadBusinessStart,reLoadBusinessStart, loadBusinessSuccess, loadBusinessFailure } = businessSlice.actions;
 
 // Export the slice reducer
 export default businessSlice.reducer;

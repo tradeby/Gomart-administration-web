@@ -7,6 +7,7 @@ export interface Business {
     address: string;
     closingTime: string;
     openingTime: string;
+    daysOpen: string;
     membersSince: string;
     numberOfFollowers: number;
     phoneNumber: string;
@@ -26,6 +27,7 @@ export interface Business {
     };
     logoUrl: string;
     isDeactivated:boolean;
+    isPublished:boolean;
     coverPhotoUrl: string;
     galleryPhotos: string[];
     //reviews: Reviews[];

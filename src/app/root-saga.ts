@@ -7,6 +7,9 @@ import businessesSaga from "../features/businesses/business.saga";
 import businessDetailSaga from "../features/businesses/business-detail/business-detail.saga";
 import listedProductSaga from "../features/businesses/business-detail/tabs/listed-products/listed-products.saga";
 import {productSaga} from "../features/businesses/business-detail/tabs/listed-products/product-detail/product.saga";
+import {
+    watchUpdateBusinessRequest
+} from "../features/businesses/business-detail/tabs/business-information/update-business.saga";
 
 
 export function* rootSaga() {
@@ -19,6 +22,7 @@ export function* rootSaga() {
         fork(businessDetailSaga),
         fork(listedProductSaga),
         fork(productSaga),
+        fork(watchUpdateBusinessRequest),
         //fork(studentsListSaga),
 
     ])

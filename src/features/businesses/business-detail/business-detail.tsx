@@ -13,7 +13,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {loadUserStart} from "../../users/user-detail/user-detail.slice";
 import {loadBusinessStart} from "./business-detail.slice";
 import {FullScreenLoader} from "../../../shared/loader/full-screen-loader";
-
+import PlaceHolderImage from '../../../assets/place-holder-photo.svg';
 const breadcrumbs =(props:{navigate:any, businessName:string})=>(
     <Breadcrumbs onExpand={__noop}>
         <BreadcrumbsItem  onClick={()=>props.navigate('/')} text="Dashboard" key="Home"/>
@@ -52,7 +52,7 @@ export function BusinessDetail() {
             actions={actionsContent}
         >
             <div className="flex">
-                <img src={business?.logoUrl} alt="Business Logo"
+                <img src={business?.logoUrl ?? PlaceHolderImage} alt="Business Logo"
                      className="rounded-full mr-2 h-10 w-10 object-cover"/> Business Detail - {business?.companyName} - {business?.id}
             </div>
         </PageHeader>
