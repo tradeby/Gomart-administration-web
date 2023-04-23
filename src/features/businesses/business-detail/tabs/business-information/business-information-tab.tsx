@@ -5,7 +5,7 @@ import LoadingButton from "@atlaskit/button/loading-button";
 import Button from "@atlaskit/button/standard-button";
 import Lozenge from "@atlaskit/lozenge";
 import SettingsIcon from '@atlaskit/icon/glyph/settings'
-import React, {ChangeEvent, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {MapSection} from "./google-map-section";
 import {useAppDispatch, useAppSelector} from "../../../../../app/hooks";
 import {useNavigate} from "react-router-dom";
@@ -56,7 +56,15 @@ export function BusinessInformationPanel(props: { business: Business }) {
         galleryPhotos: [...(props?.business?.galleryPhotos ?? [])]
 
     });
-    const [showMap, setShowMap] = useState(true);
+    const [showMap, setShowMap] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setShowMap(true);
+        }, 200);
+        // Code to be executed after component has been rendered to the DOM
+    }, []); // Empty dependency array ensures that the effect runs only once, simulating componentDidMount
+
     const submitForm = (data: BusinessInformationFormProp) => {
         //console.log('submit form', data)
 
@@ -112,19 +120,25 @@ export function BusinessInformationPanel(props: { business: Business }) {
         setGallaryImageFiles(prevImageFiles => prevImageFiles.filter((_, i) => i !== index));
 
     }
-    const handleMapAddressChange = (lat: number, lng: number) => {
+    const handleMapAddressChange = (lat: number, lng: number, address: string) => {
+
+        console.log('address handled is', address);
         setShowMap(false);
-       // setTimeout(()=>{},200);
+        setTimeout(() => {
+            setShowMap(true);
+        }, 200);
         setBusiness((prevBusiness) => ({
             ...prevBusiness,
+            address: address,
             map: {
                 ...prevBusiness.map,
                 longitude: lng,
-                latitude: lat
+                latitude: lat,
+
             }
         }));
 
-        setShowMap(true );
+
     }
     const buildAndUpdateBusiness = () => {
         const businessToSave: Business = {
@@ -292,9 +306,10 @@ export function BusinessInformationPanel(props: { business: Business }) {
                                 </p>
                                 <div className='grid grid-cols-2 gap-x-8'>
                                     <div className='col-span-2 py-2'>
-                                        <MapSection lat={business?.map.latitude as number ?? 0}
-                                                    lng={business?.map.longitude as number ?? 0} zoom={14}
-                                                    height={'200px'}/>
+                                        {showMap ? <MapSection lat={business?.map.latitude as number ?? 0}
+                                                               lng={business?.map.longitude as number ?? 0} zoom={14}
+                                                               height={'200px'}/> :
+                                            <div className='bg-slate-100' style={{height: '200px'}}></div>}
                                     </div>
 
 
@@ -303,6 +318,7 @@ export function BusinessInformationPanel(props: { business: Business }) {
                                 <div className='grid grid-cols-3 gap-x-8 w-full'>
                                     <div className='col-span-1 py-0'><InlineEditDefault
                                         onChange={handleBusinessMapChange}
+                                        isDisabled
                                         defaultValue={business?.map.latitude.toString()}
                                         name={'latitude'}
                                         isRequired label='Latitude'/>
@@ -313,11 +329,13 @@ export function BusinessInformationPanel(props: { business: Business }) {
                                             defaultValue={business?.map.longitude.toString()}
                                             onChange={handleBusinessMapChange}
                                             name={'longitude'}
+                                            isDisabled
                                             isRequired label='Longitude'/></div>
                                     <div className='col-span-1 py-0'>
                                         <InlineEditDefault
                                             onChange={handleBusinessMapChange}
                                             defaultValue={'14'}
+                                            isDisabled
                                             name={'zoom'}
                                             isRequired label='zoom'/></div>
 
@@ -326,7 +344,9 @@ export function BusinessInformationPanel(props: { business: Business }) {
 
                                 <div className='col-span-2 py-0'>
 
-                                    <GoogleMapTestComp onAddressChange={handleMapAddressChange}/>
+                                    <GoogleMapTestComp address={business?.address}
+                                                       onChange={handleBusinessChange }
+                                                       onAddressChange={handleMapAddressChange}/>
                                     {/* <InlineEditDefault
 
                                     defaultValue={business?.address}
@@ -377,7 +397,7 @@ export function BusinessInformationPanel(props: { business: Business }) {
                                             </div>
                                             <div className="flex items-center">
                                                 <span className="font-medium text-gray-800">Address:</span>
-                                                <span className="ml-2 text-gray-600 col-span-2">123 Main St, Anytown, USA</span>
+                                                <span className="ml-2 text-gray-600 col-span-2">{business?.address}</span>
                                             </div>
                                             <div className="flex items-center">
                                                 <span className="font-medium text-gray-800">Opening Hours:</span>
@@ -394,9 +414,11 @@ export function BusinessInformationPanel(props: { business: Business }) {
 
                                     <div className='grid grid-cols-2 gap-x-8'>
                                         <div className='col-span-2 py-2'>
-                                            <MapSection lat={business?.map.latitude as number ?? 0}
-                                                        lng={business?.map.longitude as number ?? 0} zoom={13}
-                                                        height={'100px'}/>
+                                            {showMap ? <MapSection lat={business?.map.latitude as number ?? 0}
+                                                                   lng={business?.map.longitude as number ?? 0} zoom={13}
+                                                                   height={'100px'}/>:
+                                                <div className='bg-slate-100' style={{height: '100px'}}></div>}
+
                                         </div>
                                     </div>
                                     {business?.galleryPhotos && business?.galleryPhotos?.length > 0 &&
