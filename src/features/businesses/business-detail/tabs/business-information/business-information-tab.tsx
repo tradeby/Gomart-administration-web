@@ -22,6 +22,7 @@ import {generateDocumentId} from "../../../../../shared/firebase/generate-docume
 import {saveProductStart} from "../listed-products/product-detail/product.slice";
 import {updateBusinessRequest} from "./update-business.slice";
 import {FullScreenLoader} from "../../../../../shared/loader/full-screen-loader";
+import {GoogleMapTestComp} from "../../../../debug/seed-data";
 
 interface BusinessInformationFormProp {
     businessName: string,
@@ -55,6 +56,7 @@ export function BusinessInformationPanel(props: { business: Business }) {
         galleryPhotos: [...(props?.business?.galleryPhotos ?? [])]
 
     });
+    const [showMap, setShowMap] = useState(true);
     const submitForm = (data: BusinessInformationFormProp) => {
         //console.log('submit form', data)
 
@@ -110,7 +112,20 @@ export function BusinessInformationPanel(props: { business: Business }) {
         setGallaryImageFiles(prevImageFiles => prevImageFiles.filter((_, i) => i !== index));
 
     }
+    const handleMapAddressChange = (lat: number, lng: number) => {
+        setShowMap(false);
+       // setTimeout(()=>{},200);
+        setBusiness((prevBusiness) => ({
+            ...prevBusiness,
+            map: {
+                ...prevBusiness.map,
+                longitude: lng,
+                latitude: lat
+            }
+        }));
 
+        setShowMap(true );
+    }
     const buildAndUpdateBusiness = () => {
         const businessToSave: Business = {
             ...business,
@@ -309,12 +324,15 @@ export function BusinessInformationPanel(props: { business: Business }) {
 
                                 </div>
 
-                                <div className='col-span-2 py-0'><InlineEditDefault
+                                <div className='col-span-2 py-0'>
+
+                                    <GoogleMapTestComp onAddressChange={handleMapAddressChange}/>
+                                    {/* <InlineEditDefault
 
                                     defaultValue={business?.address}
                                     onChange={handleBusinessChange}
                                     name={'address'}
-                                    isRequired label='Business Address'/>
+                                    isRequired label='Business Address'/>*/}
                                 </div>
 
                                 <GallaryPhotosSection galleryPhotos={gallaryImageFiles.map(c => c.url)}

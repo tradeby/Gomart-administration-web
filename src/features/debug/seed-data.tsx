@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Breadcrumbs, {BreadcrumbsItem} from "@atlaskit/breadcrumbs";
 import __noop from "@atlaskit/ds-lib/noop";
 import ButtonGroup from "@atlaskit/button/button-group";
@@ -11,10 +11,18 @@ import {addDoc, collection} from "firebase/firestore";
 import {db} from "../../shared/firebase/firestore";
 import {onLoadSampleUserData} from "./debug.slice";
 import Tabs, {Tab, TabList, TabPanel} from "@atlaskit/tabs";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import {geocodeByAddress, getLatLng} from 'react-google-places-autocomplete';
+import "react-google-places-autocomplete/dist/index.min.css";
 import {SummaryTabPanel} from "../users/user-detail/tabs/summary-tab";
 import {SavedProductsTab} from "../users/user-detail/tabs/saved-products";
 import {RecentlyViewedTab} from "../users/user-detail/tabs/recently-viewed-tab";
 import {FollowedBusinessesTab} from "../users/user-detail/tabs/followed-businesses-tab";
+import {GoogleMap, Autocomplete} from '@react-google-maps/api';
+
+import Textfield from '@atlaskit/textfield';
+import {Field} from "@atlaskit/form";
+
 
 const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
@@ -22,7 +30,6 @@ const breadcrumbs = (
         <BreadcrumbsItem text="List" key="Parent page"/>
     </Breadcrumbs>
 );
-
 
 
 export function DebugSeedData() {
@@ -37,7 +44,7 @@ export function DebugSeedData() {
                 middle: "Mathison",
                 last: "Turing",
                 born: 1912
-            }).then((docRef)=> {
+            }).then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
                 dispatch(onLoadSampleUserData())
             });
@@ -64,9 +71,13 @@ export function DebugSeedData() {
             id="default"
         >
             <TabList>
-                <Tab>Seed sample data and read that data</Tab>
                 <Tab>test debug</Tab>
+                <Tab>Seed sample data and read that data</Tab>
             </TabList>
+            <TabPanel>
+                <GoogleMapTestComp onAddressChange={()=>console.log('address changed')}/>
+
+            </TabPanel>
             <TabPanel>
                 <div>
                     <div className='mt-4'>
@@ -82,12 +93,94 @@ export function DebugSeedData() {
                 </div>
 
             </TabPanel>
-            <TabPanel>  </TabPanel>
+
 
         </Tabs>
-
 
 
     </div>
 }
 
+const apiKey = 'AIzaSyDo0KVqGLzCqIUks4a8UJSuAJSW_k3ec3o';
+
+
+interface LatLng {
+    lat: number;
+    lng: number;
+}
+
+export function GoogleMapTestComp(props: { onAddressChange: (lat:number,lng:number) => void }) {
+    const [selectedAddress, setSelectedAddress] = useState<string>('');
+
+    const handleAddress = ({description}: { description: string }) => {
+        setSelectedAddress(description);
+        geocodeByAddress(description)
+            .then((results: any) => getLatLng(results[0]))
+            .then(({lat, lng}: LatLng) =>props.onAddressChange(lat,lng)
+               // alert(`Successfully got latitude and longitude, ${lat}, ${lng}`)
+            )
+            .catch((error: any) => console.error(error));
+    };
+
+    return (
+        <div className=''>
+            <GooglePlacesAutocomplete
+                debounce={800}
+                apiKey={apiKey}
+                renderInput={(props) => (
+                    <div className="suggestions-container">
+
+                        <Field
+                            label="Business address"
+                            name="command"
+                            isRequired
+                            defaultValue=""
+                        >
+                            {({fieldProps}: any) => (
+                                <>
+                                    <Textfield
+
+                                        {...fieldProps}
+                                        {...props}
+                                    />
+                                </>
+                            )}
+                        </Field>
+                        {/*   <input {...props}/>*/}
+                    </div>
+                )}
+                onSelect={handleAddress}
+                renderSuggestions={(
+                    activeSuggestion: number, suggestions: Array<any>, onSelectSuggestion: (selection: any, event: any) => void
+                ) => (
+                    <div className="relative">
+
+                        <ul
+                            className="absolute left-0 right-0 z-10 bg-white border border-gray-300 rounded mt-1 max-h-40 overflow-y-auto"
+                            id="suggestions-list"
+                        >
+                            {suggestions
+                                .map((suggestion) => (
+                                    <li
+                                        key={suggestion.key}
+                                        className="px-4 py-2 cursor-pointer"
+                                        onClick={event => onSelectSuggestion(suggestion, event)}
+                                    >
+                                        {suggestion.description}
+                                    </li>
+                                ))}
+                        </ul>
+                        {/* {suggestions.map(suggestion => (
+                            <div
+                                className="suggestion"
+                                onClick={event => onSelectSuggestion(suggestion, event)}
+                            >
+                                {suggestion.description}
+                            </div>
+                        ))}*/}
+                    </div>
+                )}
+            />
+        </div>
+    );
+}
