@@ -1,6 +1,11 @@
 import {put, call, takeLatest} from 'redux-saga/effects';
 import {PayloadAction} from "@reduxjs/toolkit";
-import {loadBusinessFailure, loadBusinessStart, loadBusinessSuccess} from "./business-detail.slice";
+import {
+    loadBusinessFailure,
+    loadBusinessStart,
+    loadBusinessSuccess,
+    reLoadBusinessStart
+} from "./business-detail.slice";
 import {ErrorResult} from "../../debug/debug.slice";
 import {doc, getDoc} from "firebase/firestore";
 import {db} from "../../../shared/firebase/firestore";
@@ -31,6 +36,7 @@ function* loadBusinessSaga(action: PayloadAction<{businessId:string}>): any {
 // Define the saga watcher function
 function* businessDetailSaga() {
     yield takeLatest(loadBusinessStart.type, loadBusinessSaga); // Watch for "loadBusinessStart" action and run the saga worker
+    yield takeLatest(reLoadBusinessStart.type, loadBusinessSaga); // Watch for "loadBusinessStart" action and run the saga worker
 }
 
 export default businessDetailSaga;

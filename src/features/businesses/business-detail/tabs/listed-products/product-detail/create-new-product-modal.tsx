@@ -30,12 +30,12 @@ import {deleteProduct, fetchListedProductsStart} from "../listed-products.slice"
 import {ListedProductCard} from "../listed-products-tab";
 import Lozenge from "@atlaskit/lozenge";
 
-interface ProductImageFile {
+export interface ProductImageFile {
     url: string,
     file: File | null,
 }
 
-function toProductImageFile(prop: { url?: string, file?: File }): ProductImageFile {
+export function toProductImageFile(prop: { url?: string, file?: File }): ProductImageFile {
     if (prop.url) {
         return {url: prop.url, file: null};
     }

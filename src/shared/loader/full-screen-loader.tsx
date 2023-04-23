@@ -13,7 +13,7 @@ export function FullScreenLoader(){
                                             className="animate-spin mr-2 h-5 w-5 border-t-2 border-blue-500 border-solid rounded-full"></span>
                     <span className="text-gray-900 text-lg">Saving...</span>
                 </div>
-                <p className="text-gray-600">Please wait while saving your post...</p>
+                <p className="text-gray-600">Please wait while saving your changes...</p>
             </div>
         </div>
     );

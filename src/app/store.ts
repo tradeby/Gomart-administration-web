@@ -12,6 +12,8 @@ import listedProductsReducer from '../features/businesses/business-detail/tabs/l
 import productDetailReducer
     from '../features/businesses/business-detail/tabs/listed-products/product-detail/product.slice';
 import flagReducer from '../shared/flag/flag-slice';
+import updateBusinessReducer
+    from '../features/businesses/business-detail/tabs/business-information/update-business.slice';
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -26,6 +28,7 @@ export const store = configureStore({
         listedProductsSlice: listedProductsReducer,
         productDetailSlice: productDetailReducer,
         flagNotification: flagReducer,
+        updateBusinessSlice: updateBusinessReducer
     },
     middleware: [sagaMiddleware
     ],
