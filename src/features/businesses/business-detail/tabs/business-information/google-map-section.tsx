@@ -13,7 +13,7 @@ export function MapSection(props: {
     const {isLoaded} = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: apiKey,
-        libraries: ['geometry', 'drawing'],
+        libraries: ['geometry', 'drawing',"places"],
     });
     const options = {
         center: {lat: props.lat, lng: props.lng},

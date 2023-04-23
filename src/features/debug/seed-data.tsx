@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import Breadcrumbs, {BreadcrumbsItem} from "@atlaskit/breadcrumbs";
 import __noop from "@atlaskit/ds-lib/noop";
 import ButtonGroup from "@atlaskit/button/button-group";
@@ -75,7 +75,7 @@ export function DebugSeedData() {
                 <Tab>Seed sample data and read that data</Tab>
             </TabList>
             <TabPanel>
-                <GoogleMapTestComp onAddressChange={()=>console.log('address changed')}/>
+                <GoogleMapTestComp address={''} onAddressChange={() => console.log('address changed')}/>
 
             </TabPanel>
             <TabPanel>
@@ -109,24 +109,33 @@ interface LatLng {
     lng: number;
 }
 
-export function GoogleMapTestComp(props: { onAddressChange: (lat:number,lng:number) => void }) {
-    const [selectedAddress, setSelectedAddress] = useState<string>('');
+export function GoogleMapTestComp(prop: { address: string, onChange?: (e: ChangeEvent<HTMLInputElement>) => void, onAddressChange: (lat: number, lng: number, address: string) => void }) {
+    // const [selectedAddress, setSelectedAddress] = useState<string>('');
 
     const handleAddress = ({description}: { description: string }) => {
-        setSelectedAddress(description);
+        // setSelectedAddress(description);
         geocodeByAddress(description)
             .then((results: any) => getLatLng(results[0]))
-            .then(({lat, lng}: LatLng) =>props.onAddressChange(lat,lng)
-               // alert(`Successfully got latitude and longitude, ${lat}, ${lng}`)
+            .then(({lat, lng}: LatLng) => prop.onAddressChange(lat, lng, description)
+                // alert(`Successfully got latitude and longitude, ${lat}, ${lng}`)
             )
             .catch((error: any) => console.error(error));
     };
 
+
     return (
         <div className=''>
             <GooglePlacesAutocomplete
+                // types={["(regions)"]} // Specify the type of results to be returned
+                // componentRestrictions={{ country: "NG" }} // Set country restriction to Nigeria
+                autocompletionRequest={{
+                    componentRestrictions: {
+                        country: 'ng',
+                    }
+                }}
                 debounce={800}
                 apiKey={apiKey}
+                initialValue={prop.address}
                 renderInput={(props) => (
                     <div className="suggestions-container">
 
@@ -134,17 +143,24 @@ export function GoogleMapTestComp(props: { onAddressChange: (lat:number,lng:numb
                             label="Business address"
                             name="command"
                             isRequired
-                            defaultValue=""
                         >
-                            {({fieldProps}: any) => (
-                                <>
-                                    <Textfield
+                            {({fieldProps}: any) => {
+                                //  setSelectedAddress(props.value)
+                                return (
+                                    <>
+                                        <Textfield
 
-                                        {...fieldProps}
-                                        {...props}
-                                    />
-                                </>
-                            )}
+                                            {...fieldProps}
+                                            {...props}
+                                            /*
+                                            name={'address'}
+                                            onChange={prop?.onChange}*/
+                                        />
+                                        {/*   <p>{JSON.stringify(props)}</p>*/}
+                                    </>
+
+                                )
+                            }}
                         </Field>
                         {/*   <input {...props}/>*/}
                     </div>
