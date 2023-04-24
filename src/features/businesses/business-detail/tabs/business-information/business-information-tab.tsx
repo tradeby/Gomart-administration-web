@@ -1,4 +1,4 @@
-import Form from "@atlaskit/form";
+import Form, {Field, HelperMessage} from "@atlaskit/form";
 import InlineEditDefault, {InlineDatePicker} from "../../../../../shared/inline-textfield";
 import ButtonGroup from "@atlaskit/button/button-group";
 import LoadingButton from "@atlaskit/button/loading-button";
@@ -23,6 +23,7 @@ import {saveProductStart} from "../listed-products/product-detail/product.slice"
 import {updateBusinessRequest} from "./update-business.slice";
 import {FullScreenLoader} from "../../../../../shared/loader/full-screen-loader";
 import {GoogleMapTestComp} from "../../../../debug/seed-data";
+import {DateTimePicker, TimePicker} from "@atlaskit/datetime-picker";
 
 interface BusinessInformationFormProp {
     businessName: string,
@@ -36,6 +37,8 @@ interface BusinessInformationFormProp {
     area: string,
     photosUrl: string[]
 }
+
+const supportedTime:string[] = [  "07:00",  "07:30",  "08:00",  "08:30",  "09:00",  "09:30",  "10:00",  "10:30",  "11:00",  "11:30",  "12:00",  "12:30",  "13:00",  "13:30",  "14:00",  "14:30",  "15:00",  "15:30",  "16:00",  "16:30",  "17:00",  "17:30",  "18:00",  "18:30",  "19:00",  "19:30",  "20:00",  "20:30",  "21:00",  "21:30",  "22:00",  "22:30",  "23:00",  "23:30"];
 
 export function BusinessInformationPanel(props: { business: Business }) {
     const navigate = useNavigate();
@@ -175,6 +178,13 @@ export function BusinessInformationPanel(props: { business: Business }) {
     }
 
 
+    function handleUpdateTime(key:string, value: string) {
+        setBusiness((prevBusiness) => ({
+            ...prevBusiness,
+            [key]:value
+        }));
+    }
+
     /*  if (loading) {
           return <p>Loading!</p>
       }
@@ -276,7 +286,7 @@ export function BusinessInformationPanel(props: { business: Business }) {
 
 
                                         </div>
-                                        <div className='grid grid-cols-4 gap-x-8'>
+                                      {/*  <div className='grid grid-cols-4 gap-x-8'>
                                             <div className='col-span-1 py-0'><InlineEditDefault
                                                 onChange={handleBusinessChange}
                                                 defaultValue={business?.openingTime}
@@ -290,6 +300,58 @@ export function BusinessInformationPanel(props: { business: Business }) {
                                                     defaultValue={business?.closingTime}
                                                     name={'closingTime'}
                                                     isRequired label='Closing Time'/></div>
+                                            <div className='col-span-2 py-0'>
+                                                <InlineEditDefault
+                                                    onChange={handleBusinessChange}
+                                                    defaultValue={business?.daysOpen}
+                                                    name={'daysOpen'}
+                                                    isRequired label='Days open'/></div>
+
+
+                                        </div>*/}
+                                        <div className='grid grid-cols-4 gap-x-8'>
+                                            <div className='col-span-1 py-0'>
+                                                <Field
+                                                    name="datetime-picker0"
+                                                    label="Opening time"
+
+                                                    defaultValue={business?.openingTime}
+                                                    isRequired={false}
+                                                >
+                                                    {({ fieldProps }) => (
+                                                        <>
+                                                            <TimePicker
+                                                                {...fieldProps}
+                                                                times={supportedTime}
+                                                                onChange={(value)=>handleUpdateTime('openingTime', value)}
+                                                                selectProps={{ inputId: fieldProps.id }}
+                                                            />
+
+                                                        </>
+                                                    )}
+                                                </Field>
+                                            </div>
+                                            <div className='col-span-1 py-0'>
+                                                <Field
+                                                    name="datetime-picker2"
+                                                    label="Closing time"
+                                                    defaultValue={business?.closingTime}
+                                                    isRequired={false}
+                                                >
+                                                    {({ fieldProps }) => (
+                                                        <>
+                                                            <TimePicker
+                                                                {...fieldProps}
+                                                                times={supportedTime}
+                                                                onChange={(value)=>handleUpdateTime('closingTime',value)}
+                                                                selectProps={{ inputId: fieldProps.id }}
+                                                            />
+
+                                                        </>
+                                                    )}
+                                                </Field>
+                                            </div>
+
                                             <div className='col-span-2 py-0'>
                                                 <InlineEditDefault
                                                     onChange={handleBusinessChange}
