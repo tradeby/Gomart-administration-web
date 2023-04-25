@@ -2,8 +2,9 @@ import React from "react";
 import {Chart} from "react-google-charts";
 import Button from "@atlaskit/button/standard-button";
 import {useNavigate} from "react-router-dom";
+import {DashboardData} from "../dashboard";
 
-export function UsersVsBusinessesGraph() {
+export function UsersVsBusinessesGraph(props:{loading:boolean, dashboardCount:DashboardData}) {
     const navigate = useNavigate();
     const options = {
         legend: "none",
@@ -26,8 +27,8 @@ export function UsersVsBusinessesGraph() {
 
     const data = [
         ["title", "Count", { role: 'style' }],
-        ['Users', 600,'#ffab00' ],
-        ['Businesses', 400,'#0052cc'],
+        ['Users', props.dashboardCount.totalUsers,'#ffab00' ],
+        ['Businesses', props.dashboardCount.totalBusinesses,'#0052cc'],
     ];
     return <div className="bg-white col-span-2 lg:col-span-1 w-full shadow rounded-md h-96 p-2 pb-0 ">
         <div className="flex space-x-4 p-3">

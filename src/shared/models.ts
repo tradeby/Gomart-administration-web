@@ -1,3 +1,7 @@
+import {
+    PromoteType,
+    PromotionPeriod
+} from "../features/businesses/business-detail/tabs/listed-products/product-detail/promote-type";
 
 
 export interface Business {
@@ -119,4 +123,32 @@ export interface Review {
     reviewText: string;
     createdOn: string;
     updatedOn: string;
+}
+
+
+export interface Feedback {
+    id: string;
+    message: string;
+    rating: number;
+    createdOn: string;
+    updatedOn: string;
+    submittedByUserId:string;
+    submittedByUser: User
+}
+
+interface AdSales {
+    id: string,
+    adType:  PromoteType,
+    period: PromotionPeriod,
+    status: 'ACTIVE' | 'CANCELLED' | 'EXPIRED';
+    totalAmount: number,
+    isActive: boolean,
+    productId: string,
+    businessId: string,
+    product:Product,
+    vendor:Business,
+    billingUser:User
+    createdOn: string,
+    updatedOn: string
+
 }
