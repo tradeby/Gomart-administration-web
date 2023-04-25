@@ -1,4 +1,7 @@
-export interface AppUser {
+import firebase from "firebase/compat";
+import User = firebase.User;
+
+export interface AppUser extends User{
     uid: string;
     email: string;
     emailVerified: boolean;

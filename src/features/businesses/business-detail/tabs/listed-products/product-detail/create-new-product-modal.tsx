@@ -192,7 +192,7 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
             return false;
         }
 
-        if (( imageFiles.length) < 1) {
+        if ((imageFiles.length) < 1) {
             alert('You need to Upload atleast one image for this product');
             setProduct((prevProduct) => ({
                 ...prevProduct,
@@ -206,7 +206,7 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
     const handleIsPublished = () => {
 
         const cont = checkIsPublishedCondition();
-        if(cont){
+        if (cont) {
             setProduct((prevProduct) => ({
                 ...prevProduct,
                 isPublished: !prevProduct.isPublished,
@@ -311,7 +311,7 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
         const newDocumentId = props.editProduct ? props.editProduct.id : generateDocumentId();
         const prodToSave: Product = {
             id: newDocumentId,
-            businessId: business?.id as string,
+            businessId: props.editProduct ? props.editProduct.businessId : business?.id as string,
             productName: product.productName,
             productDescription: product.productDescription,
             isNew: product.isNew,

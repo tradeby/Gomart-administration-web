@@ -123,9 +123,10 @@ export function CustomSideNav() {
                     id="2"
                     isSelected={!!(pathname.match('/ads'))}
                     testId="filter-nesting-item"
+                    isDisabled
                     iconBefore={<AdsIconCustom />}
                     onClick={() => navigate('/ads/sales')}
-                >Sold Ads
+                >Sold Ads <Lozenge appearance={'new'} > Coming soon!</Lozenge>
                 </ButtonItem>
 
 
@@ -158,8 +159,9 @@ export function CustomSideNav() {
                     isSelected={!!(pathname.match('/app-feedback'))}
                     testId="filter-nesting-item"
                     iconBefore={<AppFeedbackIcon label=""/>}
-                    onClick={() => navigate('/app-feedback')}
-                >App Feedback
+                    isDisabled
+                   // onClick={() => navigate('/app-feedback')}
+                >App Feedback <Lozenge appearance={'new'} > Coming soon!</Lozenge>
                 </ButtonItem>
               {/*  <ButtonItem
                     id="4"

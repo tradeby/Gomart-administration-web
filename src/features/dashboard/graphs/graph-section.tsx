@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {DashboardGraphLoader, DashboardRecentListLoader} from "../dashboard";
+import {DashboardData, DashboardGraphLoader, DashboardRecentListLoader} from "../dashboard";
 import {UsersRegistrationGraph} from "./users-registration-graph";
 import {UsersVsBusinessesGraph} from "./users-businesses-graph";
 import {useNavigate} from "react-router-dom";
 
-export function GraphSection() {
+export function GraphSection(props:{loading:boolean, dashboardCount:DashboardData}) {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     useEffect(() => {
@@ -32,9 +32,9 @@ export function GraphSection() {
 
             {
 
-                isLoading ?
+                props.loading ?
                     <DashboardRecentListLoader/> :
-                    <UsersVsBusinessesGraph/>
+                    <UsersVsBusinessesGraph loading={props.loading} dashboardCount={props.dashboardCount}/>
 
 
             }

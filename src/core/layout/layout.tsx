@@ -90,13 +90,13 @@ const navigate = useNavigate();
             renderHelp={() => <Help tooltip="Get help" />}
             renderSettings={DefaultSettings}
             renderProfile={DefaultProfile}
-            renderNotifications={() =>
+           /* renderNotifications={() =>
                 {
                     const navigate = useNavigate();
                     return <IconButton icon={<DebugIcon  label={'debug bottom'}/>} onClick={()=>navigate('/debug/seed-data')}  tooltip={'debug'}/>;
                 }
 
-            }
+            }*/
            renderAppSwitcher={DefaultAppSwitcher}
         />
     );
