@@ -3,7 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import {getUsersFailure, getUsersStart, getUsersSuccess} from "./users-list.slice";
 import {db} from "../../shared/firebase/firestore";
 import {User} from "../../shared/models";
-import {AuthError} from "@firebase/auth";
+import { getAuth } from "firebase/auth";
 import {ErrorResult} from "../debug/debug.slice"; // import your Firebase configuration
 
 function* getUsers():any {
