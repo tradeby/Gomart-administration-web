@@ -2,14 +2,15 @@ import Form from "@atlaskit/form";
 import Button from "@atlaskit/button/standard-button";
 import ButtonGroup from "@atlaskit/button/button-group";
 import LoadingButton from "@atlaskit/button/loading-button";
-import InlineEditDefault, {InlineDatePicker, InlineSelect} from "../../../../shared/inline-textfield";
+import InlineEditDefault, {InlineDatePicker, InlineSelect} from "../../../../../shared/inline-textfield";
 import React from "react";
 import Lozenge from "@atlaskit/lozenge";
 import coverPhoto from './../cover-photo.jpg';
-import placeHolderPhoto from '../../../../assets/place-holder-photo.svg';
-import {useAppSelector} from "../../../../app/hooks";
-import {timeAgo} from "../../../../shared/time-ago/time-ago";
-import {formatAgeDateString} from "../../../../shared/time-ago/age-ago";
+import placeHolderPhoto from '../../../../../assets/place-holder-photo.svg';
+import {useAppSelector} from "../../../../../app/hooks";
+import {timeAgo} from "../../../../../shared/time-ago/time-ago";
+import {formatAgeDateString} from "../../../../../shared/time-ago/age-ago";
+import { Business, Product } from "../../../../../shared/models";
 interface SummaryInformationFormProp {
     firstName: string,
     lastName: string,
@@ -141,27 +142,27 @@ export function SummaryTabPanel() {
 }
 
 
-export function ProductCard() {
+export function ProductCard(props: { product: Product}) {
     return <div className="w-full md:w-1/2 lg:w-1/4 px-1 mb-8">
         <div className="bg-white  shadow">
-            <img src={placeHolderPhoto} alt="Restaurant Image"
+            <img src={props.product?.productImageUrl[0]} alt="Product Image"
                  className="w-full "/>
             <div className="p-4">
-                <h3 className=" font-semibold mb-2">Restaurant Name 3</h3>
-                <Lozenge>Restaurant</Lozenge>
+                <h3 className=" font-semibold mb-2">{props.product?.productName}</h3>
+                <Lozenge>{props.product?.productName}</Lozenge>
             </div>
         </div>
     </div>;
 }
 
-export function BusinessCard() {
+export function BusinessCard(props: { business: Business }) {
     return <div className="w-full md:w-1/2 lg:w-1/4 px-1 mb-8">
         <div className="bg-white  shadow">
             <img src={placeHolderPhoto} alt="Restaurant Image"
                  className="w-full rounded-full "/>
             <div className="p-4">
-                <h3 className=" font-semibold mb-2">Restaurant Name 3</h3>
-                <Lozenge>Restaurant</Lozenge>
+                <h3 className=" font-semibold mb-2">{props.business?.companyName}</h3>
+                <Lozenge>{props.business?.businessCategory}</Lozenge>
             </div>
         </div>
     </div>;
@@ -172,10 +173,10 @@ function SavedProductsSection() {
         <p className="text-lg  pt-12 pb-3 font-semibold"> Saved products
         </p>
         <div className="flex py-0 my-0 flex-wrap mx-0 px-0">
+            {/* <ProductCard/>
             <ProductCard/>
             <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
+            <ProductCard/> */}
 
         </div>
         <Button  onClick={() => {}}>View more</Button>
@@ -187,10 +188,10 @@ function RecentlyViewedProductsSection(){
         <p className="text-lg  pt-12 pb-3 font-semibold"> Recently viewed
         </p>
         <div className="flex py-0 my-0 flex-wrap mx-0 px-0">
+            {/* <ProductCard/>
             <ProductCard/>
             <ProductCard/>
-            <ProductCard/>
-            <ProductCard/>
+            <ProductCard/> */}
 
         </div>
         <Button  onClick={() => {}}>View more</Button>
@@ -203,10 +204,10 @@ function FollowedBusinessesSection() {
         <p className="text-lg  pt-12 pb-3 font-semibold"> Followed businesses
         </p>
         <div className="flex flex-wrap mx-0 px-0">
+            {/* <BusinessCard/>
             <BusinessCard/>
             <BusinessCard/>
-            <BusinessCard/>
-            <BusinessCard/>
+            <BusinessCard/> */}
         </div>
         <Button  onClick={() => {}}>View more</Button>
     </>

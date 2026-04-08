@@ -15,7 +15,9 @@ import productDetailReducer
 import flagReducer from '../shared/flag/flag-slice';
 import updateBusinessReducer
     from '../features/businesses/business-detail/tabs/business-information/update-business.slice';
-
+import listedSavedProductsReducer  from '../features/users/user-detail/tabs/saved-products/listed-saved-products.slice';
+import listedViewedProductsReducer from '../features/users/user-detail/tabs/recently-viewed-products/listed-viewed-products.slice';
+import listedFollowedBusinessesReducer from '../features/users/user-detail/tabs/followed-businesses/listed-followed-businesses.slice';
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
     reducer: {
@@ -28,6 +30,9 @@ export const store = configureStore({
         businessesSlice: businessListReducer,
         businessDetailSlice: businessDetailReducer,
         listedProductsSlice: listedProductsReducer,
+        listedSavedProductSlice: listedSavedProductsReducer,
+        listedViewedProductsSlice: listedViewedProductsReducer,
+        listedFollowedBusinessesSlice: listedFollowedBusinessesReducer,
         productDetailSlice: productDetailReducer,
         flagNotification: flagReducer,
         updateBusinessSlice: updateBusinessReducer

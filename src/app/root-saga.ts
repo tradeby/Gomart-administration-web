@@ -11,6 +11,9 @@ import {
     watchUpdateBusinessRequest
 } from "../features/businesses/business-detail/tabs/business-information/update-business.saga";
 import { watchGetFeedbacks } from '../features/app-feedback/app-feedback.saga';
+import listedSavedProductsSaga from '../features/users/user-detail/tabs/saved-products/listed-saved-products.saga';
+import listedViewedProductSaga from '../features/users/user-detail/tabs/recently-viewed-products/listed-viewed-products.saga';
+import listedFollowedBusinessesSaga from '../features/users/user-detail/tabs/followed-businesses/listed-followed-businesses.saga';
 
 
 export function* rootSaga() {
@@ -23,6 +26,9 @@ export function* rootSaga() {
         fork(businessesSaga),
         fork(businessDetailSaga),
         fork(listedProductSaga),
+        fork(listedSavedProductsSaga),
+        fork(listedViewedProductSaga),
+        fork(listedFollowedBusinessesSaga),
         fork(productSaga),
         fork(watchUpdateBusinessRequest),
         //fork(studentsListSaga),
