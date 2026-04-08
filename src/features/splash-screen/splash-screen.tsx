@@ -6,8 +6,6 @@ import ProgressBar from '@atlaskit/progress-bar';
 import {useDispatch} from "react-redux";
 import {useLocalStorage} from "usehooks-ts";
 import {authenticationLoggedIn, authenticationLoggedOut} from "../authentication/authentication-slice";
-
-
 export function SplashScreen() {
 
     const dispatch = useDispatch();
@@ -34,7 +32,7 @@ export function SplashScreen() {
     return <div className=' w-screen flex flex-row justify-center  h-screen'>
         <div className=' flex flex-col justify-center gap-2'>
             <div  className='mx-auto'>
-                <img alt='Logo' src={GomartLogo} width='180'></img>
+                <img alt='Logo' src={GomartLogo} width='120' style={{borderRadius: "150px"}}></img>
             </div>
             <div className='py-4'><ProgressBar isIndeterminate/></div>
 
