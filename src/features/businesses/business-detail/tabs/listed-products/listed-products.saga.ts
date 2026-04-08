@@ -23,10 +23,11 @@ function* fetchProductsSaga(action: PayloadAction<{ businessId: string }>): any 
 
         const querySnapshot = yield getDocs(collection(parentDocumentRef, 'PRODUCTS')); // Replace 'Users' with your Firestore collection name
         const products: Product[] = querySnapshot.docs.map((doc: { data: () => Product; id: string }) => {
+            console.log("PRODUCT: ", doc.data());
             return {...doc.data(), id: doc.id};
 
         }); // Extract businesses data from snapshot
-
+        // console.log("PRODUCTS: ", products);
         yield put(fetchListedProductsSuccess(products)); // Dispatch "fetchProductsSuccess" action with fetched products
     } catch (error) {
         const err0r = error as { message: string };

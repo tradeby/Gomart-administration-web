@@ -10,6 +10,7 @@ import {productSaga} from "../features/businesses/business-detail/tabs/listed-pr
 import {
     watchUpdateBusinessRequest
 } from "../features/businesses/business-detail/tabs/business-information/update-business.saga";
+import { watchGetFeedbacks } from '../features/app-feedback/app-feedback.saga';
 
 
 export function* rootSaga() {
@@ -17,6 +18,7 @@ export function* rootSaga() {
         fork(debugSaga),
         fork(loginSaga),
         fork(watchGetUsers),
+        fork(watchGetFeedbacks),
         fork(watchLoadUser),
         fork(businessesSaga),
         fork(businessDetailSaga),

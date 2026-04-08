@@ -16,13 +16,13 @@ export function ListedProductsTab() {
     const dispatch = useAppDispatch();
     const {loading, error, products} = useAppSelector((state) => state.listedProductsSlice);
     const {business} = useAppSelector((state) => state.businessDetailSlice);
-
+    console.log("PRODUCTS IN TAB: ", products[0]?.productImageUrl);
     useEffect(() => {
         dispatch(fetchListedProductsStart({businessId: business?.id as string}));
     }, [])
 
     if (loading) {
-        return <div>Loading!!</div>
+        return <div>Loading Products!!</div>
     }
     if (error) {
         return <div>{error.status} {error.message}</div>
@@ -46,8 +46,8 @@ export function ListedProductsTab() {
 export function ListedProductCard(props: { product: Product, onClick:()=>void}) {
     return <div className="w-60 px-1 mb-8" onClick={props.onClick}>
         <div className="bg-gray-100  shadow">
-            <img src={props.product?.productImageUrls[0]?props.product?.productImageUrls[0]:placeHolderPhoto} alt="Restaurant Image"
-                 className="w-full h-64 object-cover "/>
+            <img src={props.product?.productImageUrl[0]?props.product?.productImageUrl[0]:placeHolderPhoto} alt="Restaurant Image"
+                className="w-full h-64 object-cover "/>
             <div className="p-4">
                 <h3 className=" font-semibold mb-2">{props.product?.productName}</h3>
                 {props.product.isPublished?<Lozenge appearance={'success'}>Public</Lozenge>:

@@ -6,6 +6,7 @@ import debugReducer from "../features/debug/debug.slice";
 import loginReducer from '../features/authentication/login/login.slice'
 import userDetailReducer from '../features/users/user-detail/user-detail.slice';
 import usersListReducer from '../features/users/users-list.slice';
+import feedbacksReducer, { feedbacksSlice } from '../features/app-feedback/app-feedback.slice';
 import businessListReducer from '../features/businesses/business.slice';
 import businessDetailReducer from '../features/businesses/business-detail/business-detail.slice';
 import listedProductsReducer from '../features/businesses/business-detail/tabs/listed-products/listed-products.slice';
@@ -22,6 +23,7 @@ export const store = configureStore({
         login: loginReducer,
         debugSlice: debugReducer,
         usersSlice: usersListReducer,
+        feedbacksSlice: feedbacksReducer,
         userDetailSlice: userDetailReducer,
         businessesSlice: businessListReducer,
         businessDetailSlice: businessDetailReducer,

@@ -1,8 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Breadcrumbs, {BreadcrumbsItem} from "@atlaskit/breadcrumbs";
+import ButtonGroup from '@atlaskit/button/button-group';
 import __noop from "@atlaskit/ds-lib/noop";
 import {NavigateFunction, useNavigate} from "react-router-dom";
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import TextField from '@atlaskit/textfield';
 import PageHeader from "@atlaskit/page-header";
 import Checkbox from "@atlaskit/checkbox";
 import {HeadCellType} from "@atlaskit/dynamic-table/types";
@@ -14,6 +16,9 @@ import Lozenge from "@atlaskit/lozenge";
 import {timeAgo} from "../../shared/time-ago/time-ago";
 import Button from "@atlaskit/button/standard-button";
 import DynamicTable from "@atlaskit/dynamic-table";
+import {getFeedbacksStart, searchFeedback} from "./app-feedback.slice";
+import {debounce} from 'lodash';
+import { Feedback } from "../../shared/models";
 
 const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
@@ -23,22 +28,61 @@ const breadcrumbs = (
     </Breadcrumbs>
 );
 
+const actionsContent = (
+    <ButtonGroup>
+        <Button isDisabled appearance="primary">Invite Administrators</Button>
+    </ButtonGroup>
+);
+
 
 
 export function AppFeedback() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    
+    const {loading, error, feedbacks, searchTerm, searchedFeedback} = useAppSelector((state) => state.feedbacksSlice);
+
+    // Define a debounced function for slicing the input value
+    const handleInputSlice = debounce((value: string) => {
+        dispatch(searchFeedback({searchTerm: value})); // Update the sliced value in state
+    }, 300); // Debounce time in milliseconds
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;// Update the input value in state
+        dispatch(searchFeedback({searchTerm: inputValue})); // U
+        //   handleInputSlice(inputValue); // Invoke the debounced function to slice the input value
+    };
+    useEffect(() => {
+        dispatch(getFeedbacksStart());
+    }, [])
+
+
+    if (error) {
+        return <div>{error.status} {error.message}</div>
+    }
     return <div className='container px-12 mx-auto'>
         <PageHeader
             breadcrumbs={breadcrumbs}
-
+            actions={actionsContent}
+            bottomBar={
+                <div style={{display: 'flex'}}>
+                    <div style={{flex: '0 0 400px'}}>
+                        <TextField value={searchTerm === null ? '' : searchTerm as string} onChange={handleInputChange}
+                                   isCompact placeholder="Search users, names, phone numbers, Uids etc"
+                                   aria-label="Search feedbacks"/>
+                    </div>
+                   {/* <div style={{flex: '0 0 200px', marginLeft: 8}}>
+                        <Button appearance="primary">Search</Button>
+                    </div>*/}
+                </div>}
         >
             App feedback - see all feedbacks sent by customers
         </PageHeader>
         <div className='py-8'>
             <DynamicTable
                 head={tableHead({withWidth: true})}
-                rows={rows(sampleData, navigate, dispatch)}
+                rows={rows(feedbacks, navigate, dispatch)}
+                isLoading={loading}
                 rowsPerPage={4}
                 defaultPage={1}
                 isFixedSize={false}
@@ -62,43 +106,37 @@ const tableHead = (props: {
                     }}
                 ></Checkbox>,
                 isSortable: false,
-                width: 2,
+                width: undefined,
             },
             {
-                key: 'product_business',
-                content: 'Product',
+                key: 'id',
+                content: 'ID',
                 width: props.withWidth ? 20 : undefined,
-            },{
-                key: 'business',
-                content: 'Vendor',
+            },
+            {
+                key: 'submittedByUser',
+                content: 'Submitted by',
                 width: props.withWidth ? 10 : undefined,
             },
 
             {
-                key: 'adType',
-                content: 'Ad Type',
+                key: 'message',
+                content: 'Feedback message',
                 width: props.withWidth ? 10 : undefined,
-            }, {
-                key: 'duration',
-                content: 'Duration',
-                width: props.withWidth ? 10 : undefined,
-            }, {
-                key: 'totalAmount',
-                content: 'Total amount',
-                width: props.withWidth ? 10 : undefined,
-            }, {
-                key: 'billingUser',
-                content: 'Billing user',
-                width: props.withWidth ? 15 : undefined,
             },
+             {
+                key: 'rating',
+                content: 'Rating',
+                width: props.withWidth ? 10 : undefined,
+            }, 
             {
                 key: 'createdOn',
                 content: 'Created on',
                 width: props.withWidth ? 10 : undefined,
             },
             {
-                key: 'status',
-                content: 'Status',
+                key: 'updatedOn',
+                content: 'Updated on',
                 width: props.withWidth ? 15 : undefined,
             },
 
@@ -112,71 +150,58 @@ const tableHead = (props: {
     } as { cells: HeadCellType[] };
 };
 
-const rows = (soldAds: SoldAdsTableModel[] | undefined, navigate: NavigateFunction, dispatch: AppDispatch,) =>
-    soldAds?.map((soldAd: SoldAdsTableModel, index: number) => ({
-        key: `row-${index}-${soldAd.adsId}`,
+const rows = (feedbacks: Feedback[] | undefined, navigate: NavigateFunction, dispatch: AppDispatch,) =>
+    feedbacks?.map((feedback: Feedback, index: number) => ({
+        key: `row-${index}-${feedback.id}`,
         cells: [
             {
-                key: createKey('Check' + soldAd.adsId.toString()),
+                    key: createKey('Check' + feedback.id.toString()),
                 content: <Checkbox
                     onClick={() => {
                     }}
                 ></Checkbox>,
             },
             {
-                key: createKey(soldAd.adsId + soldAd.nameOfAdsProduct),
+                key: createKey(feedback.id),
+                content: <label>
+                    {feedback.id}
+                </label> ,
+            },
+            {
+                key: createKey(feedback.id + feedback.submittedByUserId),
                 content: <div
-                    onClick={() => navigate('/businesses/business-detail/' + soldAd.business.businessId)}
+                    onClick={() => navigate('/businesses/business-detail/' + feedback.submittedByUser.businessId)}
                     className='flex gap-2'>
 
                     <Avatar size="small" src={'user.photoUrl'}/>
                     <div>
                         <label>
-                            {soldAd.nameOfAdsProduct}
+                            {feedback.submittedByUser.displayName}
                         </label>
                     </div>
 
                 </div>
-            }, {
-                key: createKey(soldAd.adType + soldAd.adsId),
+            },
+             {
+                key: createKey(feedback.id + feedback.message),
                 content: <label>
-                    {soldAd.business.nameOfBusiness}
+                    {feedback.message}
                 </label> ,
-            },{
-                key: createKey(soldAd.adType + soldAd.adsId),
-                content: <Lozenge>{soldAd.adType}</Lozenge>,
             },
             {
-                key: createKey(soldAd.duration + soldAd.adsId),
-                content: <p>{soldAd.duration}</p>,
+                key: createKey(feedback.id + feedback.rating),
+                content: <Lozenge>{feedback.rating}</Lozenge>,
             },
             {
-                key: createKey(soldAd.adType + soldAd.adsId),
-                content: <p>N{soldAd.totalAmount}</p>,
+                key: createKey(feedback.id + feedback.createdOn),
+                content: <p>{feedback.createdOn}</p>,
             },
             {
-                key: createKey(soldAd.adsId + soldAd.user.userid),
-                content: <div
-                    onClick={() => navigate('/user/user-detail/' + soldAd.user.userid)}
-                    className='flex gap-2'>
-
-                    <Avatar size="small" src={'user.photoUrl'}/>
-                    <label>
-                        {soldAd.user.userDisplayName}
-                    </label>
-                </div>,
+                key: createKey(feedback.updatedOn),
+                content: <p>{feedback.updatedOn}</p>,
             },
             {
-                key: createKey(soldAd.adsId + soldAd.createdOn),
-                content: timeAgo(soldAd.createdOn),
-            },
-            {
-                key: createKey('role' + soldAd.adsId + soldAd.status),
-                content: (
-                    <Lozenge> {soldAd.status}</Lozenge>
-                ),
-            }, {
-                key: createKey('view' + soldAd.adsId),
+                key: createKey('view' + feedback.id),
                 content: (
                     <Button onClick={() => {
                     }}>View</Button>

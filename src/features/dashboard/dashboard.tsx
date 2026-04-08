@@ -67,6 +67,7 @@ export function Dashboard() {
             loading: false,
         }));
         // Attach a snapshot listener to the collection
+        console.log("============ Loading DAshboard")
         const unsubscribe = onSnapshot(documentRef, (documentSnapshot) => {
             // Initialize an empty array to store the data
 
@@ -75,6 +76,7 @@ export function Dashboard() {
             if (documentSnapshot.exists()) {
 
                 const documentData = documentSnapshot.data();
+                console.log(documentData);
                 setDashboardData(prevState => {
 
                     return {
@@ -86,6 +88,7 @@ export function Dashboard() {
 
                 //  setPrevDashboardData(documentData as DashboardData);
             } else {
+                console.log("========= ERROR: Dashbord data not found!");
                 const errorResult: ErrorResult = {message: 'Dashboard data not found', status: 500}
                 setDashboardData({
                     dashboardCount: null,

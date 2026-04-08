@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator, EmulatorMockTokenOptions } from "firebase/firestore";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 
@@ -17,6 +17,10 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-export const db = getFirestore(app);
-export const auth = getAuth(app);
+const db = getFirestore(app);
+// connectFirestoreEmulator(db, "localhost", 8099);
+export {db}
+const auth = getAuth(app);
+// connectAuthEmulator(auth, "http://127.0.0.1:9099");
+export {auth}
 export const storage = getStorage(app);

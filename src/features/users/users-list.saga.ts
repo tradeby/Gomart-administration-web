@@ -8,6 +8,7 @@ import {ErrorResult} from "../debug/debug.slice"; // import your Firebase config
 
 function* getUsers():any {
     try {
+        console.log("=========== GETTING DATA");
         const querySnapshot = yield getDocs(collection(db, 'USERS')); // Replace 'Users' with your Firestore collection name
         const users: User[] = querySnapshot.docs.map((doc: { data: () => User; }) => doc.data() as User);
         yield put(getUsersSuccess(users));
