@@ -42,13 +42,14 @@ export interface Business {
 }
 
 export interface Product {
+    [x: string]: any;
     id: string;
     businessId: string;
     productName: string;
     productDescription: string;
     price: number;
     callForPrice:boolean;
-    productImageUrls: string[];
+    productImageUrl: string[];
     specifications: ProductSpecifications[],
 
     isNew: boolean;
@@ -64,7 +65,6 @@ interface ProductSpecifications{
     title:string,
     value: string
 }
-
 export interface User {
     country: {
         countryCode: string;

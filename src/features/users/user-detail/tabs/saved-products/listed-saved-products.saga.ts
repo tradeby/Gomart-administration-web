@@ -4,24 +4,23 @@ import {
     fetchListedProductsSuccess,
     fetchListedProductsFailure,
     reFetchListedProductsStart, deleteProduct
-} from "./listed-products.slice";
+} from "./listed-saved-products.slice";
 import {collection, doc, deleteDoc, getDocs,} from "firebase/firestore";
 import {db} from "../../../../../shared/firebase/firestore";
 import {ErrorResult} from "../../../../debug/debug.slice";
-import {loadBusinessFailure, loadBusinessSuccess} from "../../business-detail.slice";
 import {PayloadAction} from "@reduxjs/toolkit";
 import {Business, Product} from "../../../../../shared/models";
 import {onShowFlag} from "../../../../../shared/flag/flag-slice";
 
 
 // Define the saga worker function
-function* fetchProductsSaga(action: PayloadAction<{ businessId: string }>): any {
+function* fetchProductsSaga(action: PayloadAction<{ uid: string }>): any {
     try {
-        const businessId = action.payload.businessId; // Get the businessId from the action payload
+        const uid = action.payload.uid; // Get the businessId from the action payload
         // Get the reference to the parent document
-        const parentDocumentRef = doc(db, 'BUSINESSES', businessId);
-
-        const querySnapshot = yield getDocs(collection(parentDocumentRef, 'PRODUCTS')); // Replace 'Users' with your Firestore collection name
+        const parentDocumentRef = doc(db, 'USERS', uid);
+        console.log("SAVED PRODUCTS IN REPO");
+        const querySnapshot = yield getDocs(collection(parentDocumentRef, 'FAVORITES')); // Replace 'Users' with your Firestore collection name
         const products: Product[] = querySnapshot.docs.map((doc: { data: () => Product; id: string }) => {
             console.log("PRODUCT: ", doc.data());
             return {...doc.data(), id: doc.id};
@@ -36,16 +35,16 @@ function* fetchProductsSaga(action: PayloadAction<{ businessId: string }>): any 
     }
 }
 
-function* deleteProductsSaga(action: PayloadAction<{ businessId: string, productId: string }>): any {
+function* deleteProductsSaga(action: PayloadAction<{ uid: string, productId: string }>): any {
     try {
-        const businessId = action.payload.businessId; // Get the businessId from the action payload
+        const uid = action.payload.uid; // Get the uid from the action payload
         const productId = action.payload.productId;
         // Get the reference to the parent document
-        const documentRef = doc(db, `BUSINESSES/${businessId}/PRODUCTS`, productId);
+        const documentRef = doc(db, `USERS/${uid}/FAVORITES`, productId);
 
         const querySnapshot = yield deleteDoc(documentRef); // Replace 'Users' with your Firestore collection name
 
-        yield put(fetchListedProductsStart({businessId: businessId})); // Dispatch "fetchProductsSuccess" action with fetched products
+        yield put(fetchListedProductsStart({uid: uid})); // Dispatch "fetchProductsSuccess" action with fetched products
         yield put(onShowFlag({
             title: "Deleted product/service successfully",
             flagType: 'SUCCESS',
@@ -64,10 +63,10 @@ function* deleteProductsSaga(action: PayloadAction<{ businessId: string, product
 }
 
 // Define the saga watcher function
-function* listedProductSaga() {
+function* listedSavedProductsSaga() {
     yield takeLatest(fetchListedProductsStart.type, fetchProductsSaga); // Watch for "fetchProductsStart" action and run the saga worker
     yield takeLatest(reFetchListedProductsStart.type, fetchProductsSaga); // Watch for "fetchProductsStart" action and run the saga worker
     yield takeLatest(deleteProduct.type, deleteProductsSaga); // Watch for "fetchProductsStart" action and run the saga worker
 }
 
-export default listedProductSaga;
+export default listedSavedProductsSaga;

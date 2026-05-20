@@ -2,7 +2,7 @@ import {call, debounce, delay, put, select, takeLatest} from "redux-saga/effects
 import {attemptLogin, loginFailure, loginSuccess} from "./login.slice";
 import {ErrorResult} from "../../debug/debug.slice";
 import {auth} from "../../../shared/firebase/firestore";
-import {AuthError} from "@firebase/auth";
+import {AuthError} from "firebase/auth";
 import {signInWithEmailAndPassword} from "firebase/auth";
 
 // Firebase authentication function

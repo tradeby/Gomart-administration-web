@@ -14,10 +14,10 @@ import Tabs, {Tab, TabList, TabPanel} from "@atlaskit/tabs";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import {geocodeByAddress, getLatLng} from 'react-google-places-autocomplete';
 import "react-google-places-autocomplete/dist/index.min.css";
-import {SummaryTabPanel} from "../users/user-detail/tabs/summary-tab";
-import {SavedProductsTab} from "../users/user-detail/tabs/saved-products";
-import {RecentlyViewedTab} from "../users/user-detail/tabs/recently-viewed-tab";
-import {FollowedBusinessesTab} from "../users/user-detail/tabs/followed-businesses-tab";
+import {SummaryTabPanel} from "../users/user-detail/tabs/summary/summary-tab";
+import {SavedProductsTab} from "../users/user-detail/tabs/saved-products/saved-products";
+import {RecentlyViewedTab} from "../users/user-detail/tabs/recently-viewed-products/recently-viewed-tab";
+import {FollowedBusinessesTab} from "../users/user-detail/tabs/followed-businesses/followed-businesses-tab";
 import {GoogleMap, Autocomplete} from '@react-google-maps/api';
 
 import Textfield from '@atlaskit/textfield';
