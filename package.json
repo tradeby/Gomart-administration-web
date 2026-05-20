@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build": "react-scripts build",
     "g-admin-start": "set PORT=8170 && react-scripts start",
     "g-admin-build": "react-scripts build",
     "g-admin-test": "react-scripts test",
