@@ -63,7 +63,7 @@ const initialProductState: Product = {
     price: 0,
     callForPrice: false,
     isPublished: false,
-    productImageUrls: [],
+    productImageUrl: [],
     specifications: [],
     createdOn: "",
     updatedOn: "",
@@ -75,7 +75,7 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
     const [product, setProduct] = useState<Product>(props.editProduct ? {...initialProductState, ...props.editProduct} : initialProductState);
 
     const [selectedPromoteAd, setSelectedPromoteAd] = useState<PromoteType>(PromoteTypeList[0])
-    const [imageFiles, setImageFiles] = useState<ProductImageFile[]>([...product.productImageUrls.map(c => toProductImageFile({url: c}))]);
+    const [imageFiles, setImageFiles] = useState<ProductImageFile[]>([...product.productImageUrl.map(c => toProductImageFile({url: c}))]);
 
     const [specification, setSpecification] = useState<ProductSpecifications>({
         id: '999',
@@ -318,7 +318,7 @@ export default function CreateProductDialog(props: { editProduct?: Product }) {
             price: product.price,
             callForPrice: product.callForPrice,
             isPublished: product.isPublished,
-            productImageUrls: [...imageFiles.filter(c => !c.file).map(d => d.url)],//for images we will have to upload them first
+            productImageUrl: [...imageFiles.filter(c => !c.file).map(d => d.url)],//for images we will have to upload them first
             specifications: product.specifications,
             createdOn: "",
             updatedOn: "",

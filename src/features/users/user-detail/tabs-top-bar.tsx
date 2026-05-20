@@ -1,10 +1,10 @@
 import React, {ReactNode} from 'react';
 
 import Tabs, {Tab, TabList, TabPanel} from '@atlaskit/tabs';
-import {SummaryTabPanel} from "./tabs/summary-tab";
-import {SavedProductsTab} from "./tabs/saved-products";
-import {FollowedBusinessesTab} from "./tabs/followed-businesses-tab";
-import {RecentlyViewedTab} from "./tabs/recently-viewed-tab";
+import {SummaryTabPanel} from "./tabs/summary/summary-tab";
+import {SavedProductsTab} from "./tabs/saved-products/saved-products";
+import {FollowedBusinessesTab} from "./tabs/followed-businesses/followed-businesses-tab";
+import {RecentlyViewedTab} from "./tabs/recently-viewed-products/recently-viewed-tab";
 import {useNavigate} from "react-router-dom";
 import Lozenge from "@atlaskit/lozenge";
 import {useAppSelector} from "../../../app/hooks";

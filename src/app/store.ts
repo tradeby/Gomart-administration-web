@@ -6,6 +6,7 @@ import debugReducer from "../features/debug/debug.slice";
 import loginReducer from '../features/authentication/login/login.slice'
 import userDetailReducer from '../features/users/user-detail/user-detail.slice';
 import usersListReducer from '../features/users/users-list.slice';
+import feedbacksReducer, { feedbacksSlice } from '../features/app-feedback/app-feedback.slice';
 import businessListReducer from '../features/businesses/business.slice';
 import businessDetailReducer from '../features/businesses/business-detail/business-detail.slice';
 import listedProductsReducer from '../features/businesses/business-detail/tabs/listed-products/listed-products.slice';
@@ -14,7 +15,9 @@ import productDetailReducer
 import flagReducer from '../shared/flag/flag-slice';
 import updateBusinessReducer
     from '../features/businesses/business-detail/tabs/business-information/update-business.slice';
-
+import listedSavedProductsReducer  from '../features/users/user-detail/tabs/saved-products/listed-saved-products.slice';
+import listedViewedProductsReducer from '../features/users/user-detail/tabs/recently-viewed-products/listed-viewed-products.slice';
+import listedFollowedBusinessesReducer from '../features/users/user-detail/tabs/followed-businesses/listed-followed-businesses.slice';
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
     reducer: {
@@ -22,10 +25,14 @@ export const store = configureStore({
         login: loginReducer,
         debugSlice: debugReducer,
         usersSlice: usersListReducer,
+        feedbacksSlice: feedbacksReducer,
         userDetailSlice: userDetailReducer,
         businessesSlice: businessListReducer,
         businessDetailSlice: businessDetailReducer,
         listedProductsSlice: listedProductsReducer,
+        listedSavedProductSlice: listedSavedProductsReducer,
+        listedViewedProductsSlice: listedViewedProductsReducer,
+        listedFollowedBusinessesSlice: listedFollowedBusinessesReducer,
         productDetailSlice: productDetailReducer,
         flagNotification: flagReducer,
         updateBusinessSlice: updateBusinessReducer

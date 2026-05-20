@@ -139,6 +139,7 @@ export function CustomSideNav() {
                     isDisabled
                     testId="settings-nesting-item"
                 >
+                    <></>
 
                   {/*  <Section hasSeparator title="Period entries financial reports">
                         <ButtonItem onClick={() => navigate('/reports/fina-entries/daily')}>Daily Entry</ButtonItem>
@@ -159,8 +160,8 @@ export function CustomSideNav() {
                     isSelected={!!(pathname.match('/app-feedback'))}
                     testId="filter-nesting-item"
                     iconBefore={<AppFeedbackIcon label=""/>}
-                    isDisabled
-                   // onClick={() => navigate('/app-feedback')}
+                    // isDisabled
+                    onClick={() => navigate('/app-feedback')}
                 >App Feedback <Lozenge appearance={'new'} > Coming soon!</Lozenge>
                 </ButtonItem>
               {/*  <ButtonItem
